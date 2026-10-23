@@ -5,65 +5,345 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#17324d">
 <title>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı — OCR Prototipi</title>
+
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
 <style>
-:root{--navy:#17324d;--blue:#245b82;--pale:#eef4f8;--border:#d7e0e8;--ink:#1d2935;--muted:#5d6b78;--white:#fff;--warn:#fff4d8;--warnborder:#e4bd58}
-*{box-sizing:border-box}
-body{margin:0;background:#f5f7f9;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{background:var(--navy);color:#fff;padding:18px max(16px,calc((100% - 1100px)/2))}
-header h1{font-size:1.25rem;line-height:1.25;margin:0 0 6px}
-header p{margin:0;color:#dbe7f0;font-size:.92rem}
-main{max-width:1100px;margin:18px auto;padding:0 14px 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-.panel{background:white;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 2px 8px #19354b0a;min-width:0}
-h2{font-size:1.05rem;margin:0 0 12px;color:var(--navy)}
-h3{font-size:.95rem;margin:16px 0 8px}
-.notice{background:var(--warn);border:1px solid var(--warnborder);border-radius:10px;padding:11px 12px;font-size:.88rem;margin-bottom:14px}
-label{display:block;font-size:.88rem;font-weight:650;margin:12px 0 5px}
-input[type=text],input[type=date],textarea,select{width:100%;padding:10px 11px;border:1px solid #bfcbd5;border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
-textarea{min-height:82px;resize:vertical}
-button,.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 13px;font:600 .9rem system-ui;cursor:pointer;text-decoration:none;min-height:42px}
-button.secondary,.button.secondary{background:#eaf0f4;color:var(--navy);border:1px solid #cbd7e0}
-button.danger{background:#8d3030}
-button:disabled{opacity:.5;cursor:not-allowed}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.small{font-size:.82rem;color:var(--muted)}
-.camera-wrap{background:#0e1720;border-radius:10px;overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center;color:#dbe7f0}
-video{width:100%;max-height:340px;object-fit:contain;display:none}
-#captured{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px}
-.thumb{position:relative;border:1px solid var(--border);border-radius:8px;padding:5px;background:#fff}
-.thumb img{width:100%;height:110px;object-fit:contain;background:#f0f2f4}
-.thumb button{width:100%;min-height:30px;margin-top:4px;padding:5px;font-size:.78rem}
-.file-list{margin:8px 0 0;padding-left:18px;font-size:.88rem}
-#decision{min-height:380px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.91rem}
-.status{margin-top:8px;color:var(--muted);font-size:.82rem;overflow-wrap:anywhere}
-#ocrText{min-height:220px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem}
-.progress-wrap{height:8px;background:#e7edf2;border-radius:99px;overflow:hidden;margin-top:8px}
-#ocrProgress{height:100%;width:0;background:#245b82;transition:width .2s}
-footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);font-size:.82rem}
-@media(max-width:760px){
-  main{grid-template-columns:1fr;margin-top:12px}
-  .panel{padding:13px}
-  header{padding:16px}
-  header h1{font-size:1.12rem}
-  #decision{min-height:300px}
+:root {
+  --navy: #17324d;
+  --blue: #245b82;
+  --pale: #eef4f8;
+  --border: #d7e0e8;
+  --ink: #1d2935;
+  --muted: #5d6b78;
+  --white: #fff;
+  --warn: #fff4d8;
+  --warnborder: #e4bd58;
 }
-@media print{
-  header,.left-panel,.actions,footer,.notice{display:none!important}
-  main{display:block;margin:0;padding:0}
-  .panel{border:0;box-shadow:none}
-  #decision{border:0;min-height:0}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7f9;
+  color: var(--ink);
+  font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+header {
+  background: var(--navy);
+  color: #fff;
+  padding: 18px max(16px, calc((100% - 1100px) / 2));
+}
+
+header h1 {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+
+header p {
+  margin: 0;
+  color: #dbe7f0;
+  font-size: .92rem;
+}
+
+main {
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 0 14px 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 8px #19354b0a;
+  min-width: 0;
+}
+
+h2 {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+  color: var(--navy);
+}
+
+h3 {
+  font-size: .95rem;
+  margin: 16px 0 8px;
+}
+
+.notice {
+  background: var(--warn);
+  border: 1px solid var(--warnborder);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: .88rem;
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: .88rem;
+  font-weight: 650;
+  margin: 12px 0 5px;
+}
+
+input[type=text],
+input[type=date],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid #bfcbd5;
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+}
+
+textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--blue);
+  color: #fff;
+  padding: 10px 13px;
+  font: 600 .9rem system-ui;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 42px;
+}
+
+button.secondary,
+.button.secondary {
+  background: #eaf0f4;
+  color: var(--navy);
+  border: 1px solid #cbd7e0;
+}
+
+button.danger {
+  background: #8d3030;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.small {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+/* KAMERA ÖNİZLEMESİ: DİKEY A4 ORANI */
+.camera-wrap {
+  position: relative;
+  width: min(100%, 370px);
+  aspect-ratio: 210 / 297;
+  min-height: unset;
+  margin: 0 auto;
+  background: #0e1720;
+  border: 2px solid #8aa1b4;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dbe7f0;
+}
+
+/*
+  Video kapsayıcının tamamını kaplar.
+  object-fit: cover, dikey A4 çerçevesine uymayan kenarları
+  merkezden kırpar. Fotoğraf çekilirken aynı kırpma JavaScript
+  ile uygulanır.
+*/
+video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  object-position: center center;
+  display: none;
+}
+
+#cameraHint {
+  padding: 18px;
+  text-align: center;
+  z-index: 1;
+  position: relative;
+}
+
+#captured {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.thumb {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px;
+  background: #fff;
+}
+
+.thumb img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  background: #f0f2f4;
+}
+
+.thumb button {
+  width: 100%;
+  min-height: 30px;
+  margin-top: 4px;
+  padding: 5px;
+  font-size: .78rem;
+}
+
+.file-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: .88rem;
+}
+
+#decision {
+  min-height: 380px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .91rem;
+}
+
+.status {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: .82rem;
+  overflow-wrap: anywhere;
+}
+
+#ocrText {
+  min-height: 220px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: .88rem;
+}
+
+.progress-wrap {
+  height: 8px;
+  background: #e7edf2;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+#ocrProgress {
+  height: 100%;
+  width: 0;
+  background: #245b82;
+  transition: width .2s;
+}
+
+footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 14px 30px;
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+@media(max-width: 760px) {
+  main {
+    grid-template-columns: 1fr;
+    margin-top: 12px;
+  }
+
+  .panel {
+    padding: 13px;
+  }
+
+  header {
+    padding: 16px;
+  }
+
+  header h1 {
+    font-size: 1.12rem;
+  }
+
+  #decision {
+    min-height: 300px;
+  }
+
+  .camera-wrap {
+    width: min(100%, 370px);
+  }
+}
+
+@media print {
+  header,
+  .left-panel,
+  .actions,
+  footer,
+  .notice {
+    display: none !important;
+  }
+
+  main {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  .panel {
+    border: 0;
+    box-shadow: none;
+  }
+
+  #decision {
+    border: 0;
+    min-height: 0;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <header>
   <h1>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı</h1>
   <p>OCR prototipi · Fotoğraf/PDF metin tanıma · Düzenlenebilir karar taslağı</p>
 </header>
 
 <main>
+
   <section class="panel left-panel">
+
     <div class="notice">
       <strong>GÜVENLİ TEST MODU:</strong>
       Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin.
@@ -74,9 +354,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
     </div>
 
     <h2>1. Belge ekle</h2>
+
     <p class="small">
-      Android telefonunuzda kamera izni vererek fotoğraf çekebilir veya
-      cihazınızdaki PDF/görüntü dosyalarını seçebilirsiniz.
+      Kamerayı açarken telefonu dik tutun. Belgenin dört kenarını A4 biçimindeki
+      önizleme çerçevesine yerleştirin. Dilerseniz cihazınızdaki PDF veya görüntü
+      dosyalarını da seçebilirsiniz.
     </p>
 
     <div class="camera-wrap">
@@ -122,11 +404,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
     <textarea id="ocrText" placeholder="Tanınan metin burada görünecek. Hataları asıl belgeyle karşılaştırarak düzeltin."></textarea>
 
     <p id="cameraStatus" class="status">
-      Not: Tarayıcı kamerası genellikle HTTPS bağlantısı veya localhost gerektirir.
-      HTML dosyasını doğrudan açınca kamera izni çalışmayabilir.
+      Kamera bilgisi burada gösterilecektir. Kamera erişimi genellikle HTTPS bağlantısı gerektirir.
     </p>
 
     <h3>2. Örnek dosya bilgileri</h3>
+
     <p class="small">
       “Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.
     </p>
@@ -149,10 +431,13 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
 
     <label for="legal">Mevzuat ve dayanak kontrol notu</label>
     <textarea id="legal" placeholder="Yürürlük tarihi kontrol edilmiş resmî mevzuat ve ilgili hükümler"></textarea>
+
   </section>
 
   <section class="panel">
+
     <h2>3. Karar taslağı</h2>
+
     <p class="small">
       Metni doğrudan düzenleyebilirsiniz. Bu metin otomatik bir tıbbi/idari karar değildir;
       yetkili kurul değerlendirmesi ve mevzuat doğrulaması gerektirir.
@@ -166,6 +451,7 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
     </div>
 
     <label for="decision">Düzenlenebilir karar metni</label>
+
     <textarea id="decision">MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
 
 Bu belge prototip amacıyla hazırlanmış bir taslaktır. Nihai kurul kararı değildir.
@@ -193,8 +479,12 @@ Değerlendirme tarihi:
 
 KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı kararı oluşturmaz. Nihai karar yetkili kurulun sorumluluğundadır.</textarea>
 
-    <p id="outputStatus" class="status">Hazır. İlk olarak örnek verileri yükleyebilirsiniz.</p>
+    <p id="outputStatus" class="status">
+      Hazır. İlk olarak örnek verileri yükleyebilirsiniz.
+    </p>
+
   </section>
+
 </main>
 
 <footer>
@@ -211,10 +501,16 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 <script>
 (() => {
   const $ = id => document.getElementById(id);
+
+  // A4 dikey sayfa oranı: genişlik / yükseklik
+  const A4_RATIO = 210 / 297;
+
   let stream = null;
   let capturedCount = 0;
+
   const captured = [];
   const selectedFiles = [];
+
   let ocrBusy = false;
   let ocrWorker = null;
 
@@ -227,44 +523,55 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   }
 
   // KAMERA AÇMA
-  // Arka kameradan yüksek çözünürlük talep edilir.
-  // "ideal" değerleri zorunlu değildir; cihaz daha düşük çözünürlük sağlayabilir.
   $('startCamera').addEventListener('click', async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      cameraStatus('Bu ortam kamera erişimini desteklemiyor. HTTPS bağlantısı üzerinden açmayı deneyin.');
+      cameraStatus(
+        'Bu ortam kamera erişimini desteklemiyor. HTTPS bağlantısı üzerinden açmayı deneyin.'
+      );
       return;
     }
 
     try {
+      /*
+        Dikey A4 oranına yakın bir görüntü istenir.
+        ideal kullanıldığı için cihazın desteklemediği bir çözünürlük
+        talebi kameranın açılmasını engellememelidir.
+      */
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' },
-          width: { ideal: 3840 },
-          height: { ideal: 2160 }
+          aspectRatio: { ideal: A4_RATIO },
+          width: { ideal: 2160 },
+          height: { ideal: 3055 }
         },
         audio: false
       });
 
-      $('video').srcObject = stream;
-      await $('video').play();
-      $('video').style.display = 'block';
+      const video = $('video');
+
+      video.srcObject = stream;
+      await video.play();
+
+      video.style.display = 'block';
       $('cameraHint').style.display = 'none';
+
       $('capture').disabled = false;
       $('stopCamera').disabled = false;
       $('startCamera').disabled = true;
 
-      // Kameranın gerçekte hangi çözünürlükte görüntü verdiğini öğren.
       const track = stream.getVideoTracks()[0];
       const settings = track && track.getSettings ? track.getSettings() : {};
-      const actualWidth = settings.width || $('video').videoWidth || '?';
-      const actualHeight = settings.height || $('video').videoHeight || '?';
+
+      const actualWidth = settings.width || video.videoWidth || '?';
+      const actualHeight = settings.height || video.videoHeight || '?';
 
       cameraStatus(
-        'Kamera açık. Gerçek görüntü çözünürlüğü: ' +
+        'Kamera açık. Kaynak çözünürlük: ' +
         actualWidth + ' × ' + actualHeight +
-        ' piksel. Cihazın desteklediği çözünürlük kullanılır. ' +
-        'Belgeyi kadraja yerleştirip fotoğraf çekin.'
+        ' piksel. Önizleme ve çekilen fotoğraf A4 dikey oranına göre düzenlenir. ' +
+        'Telefonu dik tutun ve belgenin dört kenarını çerçeveye alın.'
       );
+
     } catch (e) {
       cameraStatus(
         'Kamera açılamadı. Tarayıcı iznini kontrol edin ve sayfanın HTTPS üzerinden açıldığından emin olun. Hata: ' +
@@ -273,32 +580,82 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     }
   });
 
-  // FOTOĞRAF ÇEKME
-  $('capture').addEventListener('click', () => {
-    const video = $('video');
+  /*
+    KAMERA GÖRÜNTÜSÜNÜ A4 ORANINDA KIRPMA
 
-    if (!video.videoWidth || !video.videoHeight) {
-      cameraStatus('Kamera görüntüsü henüz hazır değil. Birkaç saniye sonra tekrar deneyin.');
-      return;
+    Önizlemede CSS object-fit: cover kullanılır.
+    Burada aynı orta kırpma işlemi canvas üzerinde uygulanır.
+    Böylece ekranda görünen kadraj ile OCR motoruna giden görüntü eşleşir.
+  */
+  function drawVideoAsA4(video, canvas) {
+    const sourceWidth = video.videoWidth;
+    const sourceHeight = video.videoHeight;
+
+    if (!sourceWidth || !sourceHeight) {
+      throw new Error('Kamera görüntüsü henüz hazır değil.');
     }
 
-    const canvas = $('canvas');
+    const sourceRatio = sourceWidth / sourceHeight;
 
-    // Video hangi çözünürlükteyse fotoğraf da o çözünürlükte alınır.
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    let sx = 0;
+    let sy = 0;
+    let sw = sourceWidth;
+    let sh = sourceHeight;
+
+    if (sourceRatio > A4_RATIO) {
+      /*
+        Kaynak görüntü A4 çerçevesinden daha geniş.
+        Sağ ve soldan eşit miktarda kırpılır.
+      */
+      sw = sourceHeight * A4_RATIO;
+      sx = (sourceWidth - sw) / 2;
+    } else if (sourceRatio < A4_RATIO) {
+      /*
+        Kaynak görüntü A4 çerçevesinden daha dar ve uzun.
+        Üstten ve alttan eşit miktarda kırpılır.
+      */
+      sh = sourceWidth / A4_RATIO;
+      sy = (sourceHeight - sh) / 2;
+    }
+
+    /*
+      Canvas, kaynak görüntüdeki kırpılmış alanın çözünürlüğünü
+      mümkün olduğunca korur. Görüntü gereksiz yere sabit ve düşük
+      bir piksel ölçüsüne küçültülmez.
+    */
+    canvas.width = Math.max(1, Math.round(sw));
+    canvas.height = Math.max(1, Math.round(sh));
 
     const context = canvas.getContext('2d');
 
     if (!context) {
-      cameraStatus('Fotoğraf hazırlanamıyor. Sayfayı yenileyip tekrar deneyin.');
+      throw new Error('Fotoğraf hazırlamak için canvas açılamadı.');
+    }
+
+    context.drawImage(
+      video,
+      sx, sy, sw, sh,
+      0, 0, canvas.width, canvas.height
+    );
+  }
+
+  // FOTOĞRAF ÇEKME
+  $('capture').addEventListener('click', () => {
+    const video = $('video');
+    const canvas = $('canvas');
+
+    try {
+      drawVideoAsA4(video, canvas);
+    } catch (e) {
+      cameraStatus(e.message || String(e));
       return;
     }
 
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // JPEG kalitesi 0.88'den 0.98'e yükseltildi.
-    // Bu ayar sıkıştırmayı azaltır; dosya boyutu artabilir.
+    /*
+      JPEG kalitesi 0.98:
+      0.88 değerine göre daha az sıkıştırma uygulanır.
+      Bu, dosya boyutunu artırabilir.
+    */
     const url = canvas.toDataURL('image/jpeg', 0.98);
 
     captured.push(url);
@@ -309,11 +666,13 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
     const img = document.createElement('img');
     img.src = url;
-    img.alt = 'Çekilen belge sayfası ' + capturedCount;
+    img.alt = 'A4 oranında çekilen belge sayfası ' + capturedCount;
 
     const cap = document.createElement('div');
     cap.className = 'small';
-    cap.textContent = 'Kamera sayfası ' + capturedCount;
+    cap.textContent =
+      'A4 sayfası ' + capturedCount +
+      ' · ' + canvas.width + ' × ' + canvas.height;
 
     const del = document.createElement('button');
     del.className = 'danger';
@@ -321,9 +680,14 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
     del.addEventListener('click', () => {
       const i = captured.indexOf(url);
-      if (i >= 0) captured.splice(i, 1);
+
+      if (i >= 0) {
+        captured.splice(i, 1);
+      }
+
       div.remove();
       renderFiles();
+
       cameraStatus('Kalan kamera görüntüsü: ' + captured.length);
     });
 
@@ -331,7 +695,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     $('captured').append(div);
 
     cameraStatus(
-      'Fotoğraf alındı. OCR işleminden önce görüntünün tamamını ve yazıların netliğini kontrol edin.'
+      'Fotoğraf A4 dikey oranında hazırlandı. Görüntü çözünürlüğü: ' +
+      canvas.width + ' × ' + canvas.height +
+      ' piksel. Belgenin tamamının görüntüye girdiğini kontrol edin.'
     );
 
     renderFiles();
@@ -344,10 +710,13 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     }
 
     stream = null;
+
     $('video').srcObject = null;
     $('video').style.display = 'none';
+
     $('cameraHint').style.display = 'block';
-    $('cameraHint').textContent = 'Kamera kapalı.';
+    $('cameraHint').textContent = 'Kamera kapalı. “Kamerayı aç” düğmesine basın.';
+
     $('capture').disabled = true;
     $('stopCamera').disabled = true;
     $('startCamera').disabled = false;
@@ -360,6 +729,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     for (const f of e.target.files) {
       selectedFiles.push(f);
     }
+
     renderFiles();
     e.target.value = '';
   });
@@ -390,6 +760,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   $('clearFiles').addEventListener('click', () => {
     selectedFiles.length = 0;
     captured.length = 0;
+
     $('captured').innerHTML = '';
     renderFiles();
 
@@ -405,12 +776,15 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   }
 
   function setProgress(value) {
-    $('ocrProgress').style.width = Math.max(0, Math.min(100, value)) + '%';
+    $('ocrProgress').style.width =
+      Math.max(0, Math.min(100, value)) + '%';
   }
 
   // OCR MOTORUNU HAZIRLAMA
   async function getOcrWorker() {
-    if (ocrWorker) return ocrWorker;
+    if (ocrWorker) {
+      return ocrWorker;
+    }
 
     if (!window.Tesseract || !window.pdfjsLib) {
       throw new Error(
@@ -421,7 +795,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    ocrStatus('Türkçe OCR dil modeli hazırlanıyor. İlk kullanımda indirme biraz sürebilir…');
+    ocrStatus(
+      'Türkçe OCR dil modeli hazırlanıyor. İlk kullanımda indirme biraz sürebilir…'
+    );
 
     ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
       logger: m => {
@@ -430,7 +806,10 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
         } else if (m.status === 'loading language traineddata') {
           ocrStatus('Türkçe/İngilizce dil modeli indiriliyor…');
         } else if (m.status === 'recognizing text') {
-          ocrStatus('Metin tanınıyor… ' + Math.round((m.progress || 0) * 100) + '%');
+          ocrStatus(
+            'Metin tanınıyor… ' +
+            Math.round((m.progress || 0) * 100) + '%'
+          );
         }
       }
     });
@@ -440,9 +819,11 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
   async function recognizeImage(source, label, progressStart, progressSpan) {
     const worker = await getOcrWorker();
+
     ocrStatus('Okunuyor: ' + label);
 
     const result = await worker.recognize(source);
+
     setProgress(progressStart + progressSpan);
 
     return (result.data.text || '').trim();
@@ -452,6 +833,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   async function pdfToCanvases(file, onPage) {
     const data = new Uint8Array(await file.arrayBuffer());
     const pdf = await pdfjsLib.getDocument({ data }).promise;
+
     const maxPages = 20;
 
     if (
@@ -468,11 +850,14 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     const total = Math.min(pdf.numPages, maxPages);
 
     for (let pageNum = 1; pageNum <= total; pageNum++) {
-      ocrStatus(file.name + ' — PDF sayfası ' + pageNum + '/' + total + ' hazırlanıyor…');
+      ocrStatus(
+        file.name + ' — PDF sayfası ' +
+        pageNum + '/' + total + ' hazırlanıyor…'
+      );
 
       const page = await pdf.getPage(pageNum);
 
-      // PDF görüntüleme ölçeği mevcut test düzeniyle aynı bırakıldı.
+      // PDF ölçeği bu değişiklikte korunmuştur.
       const viewport = page.getViewport({ scale: 1.8 });
 
       const canvas = document.createElement('canvas');
@@ -484,7 +869,12 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
         viewport
       }).promise;
 
-      await onPage(canvas, file.name + ' — sayfa ' + pageNum, pageNum, total);
+      await onPage(
+        canvas,
+        file.name + ' — sayfa ' + pageNum,
+        pageNum,
+        total
+      );
     }
 
     return total;
@@ -492,7 +882,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
   // OCR ÇALIŞTIRMA
   $('runOcr').addEventListener('click', async () => {
-    if (ocrBusy) return;
+    if (ocrBusy) {
+      return;
+    }
 
     if (!selectedFiles.length && !captured.length) {
       ocrStatus('Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.');
@@ -507,9 +899,13 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     const chunks = [];
 
     try {
-      const imageFiles = selectedFiles.filter(f => f.type.startsWith('image/'));
+      const imageFiles = selectedFiles.filter(
+        f => f.type.startsWith('image/')
+      );
+
       const pdfFiles = selectedFiles.filter(
-        f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+        f => f.type === 'application/pdf' ||
+             f.name.toLowerCase().endsWith('.pdf')
       );
 
       const totalUnits =
@@ -521,27 +917,31 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
       const tick = () => {
         done++;
-        setProgress(totalUnits ? Math.min(99, done / totalUnits * 100) : 0);
+        setProgress(
+          totalUnits ? Math.min(99, done / totalUnits * 100) : 0
+        );
       };
 
       for (let i = 0; i < captured.length; i++) {
-        chunks.push(
-          '--- Kamera fotoğrafı ' + (i + 1) + ' ---\n' +
-          await recognizeImage(
-            captured[i],
-            'Kamera fotoğrafı ' + (i + 1),
-            0,
-            0
-          )
+        const text = await recognizeImage(
+          captured[i],
+          'Kamera fotoğrafı ' + (i + 1),
+          0,
+          0
         );
+
+        chunks.push(
+          '--- Kamera fotoğrafı ' + (i + 1) + ' ---\n' + text
+        );
+
         tick();
       }
 
       for (const f of imageFiles) {
-        chunks.push(
-          '--- ' + f.name + ' ---\n' +
-          await recognizeImage(f, f.name, 0, 0)
-        );
+        const text = await recognizeImage(f, f.name, 0, 0);
+
+        chunks.push('--- ' + f.name + ' ---\n' + text);
+
         tick();
       }
 
@@ -549,7 +949,10 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
         await pdfToCanvases(f, async (canvas, label, pageNum, total) => {
           const worker = await getOcrWorker();
 
-          ocrStatus('OCR yapılıyor: ' + label + ' (' + pageNum + '/' + total + ')');
+          ocrStatus(
+            'OCR yapılıyor: ' + label +
+            ' (' + pageNum + '/' + total + ')'
+          );
 
           const result = await worker.recognize(canvas);
 
@@ -559,11 +962,15 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
           );
 
           done++;
-          setProgress(totalUnits ? Math.min(99, done / totalUnits * 100) : 0);
+
+          setProgress(
+            totalUnits ? Math.min(99, done / totalUnits * 100) : 0
+          );
         });
       }
 
       $('ocrText').value = chunks.filter(Boolean).join('\n\n');
+
       setProgress(100);
 
       ocrStatus(
@@ -573,6 +980,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
       status(
         'OCR metni oluşturuldu. Kontrol edip “OCR metnini dosya özetine aktar” düğmesini kullanabilirsiniz.'
       );
+
     } catch (err) {
       console.error(err);
 
@@ -580,6 +988,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
         'OCR yapılamadı: ' + (err.message || String(err)) +
         ' Sayfayı yenileyip tekrar deneyin; gerekirse daha küçük dosya kullanın.'
       );
+
     } finally {
       ocrBusy = false;
       $('runOcr').disabled = false;
@@ -607,7 +1016,10 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
       'OCR metni dosya özeti alanına eklendi. Hataları düzeltip taslağı oluşturabilirsiniz.'
     );
 
-    summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    summary.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
   });
 
   // KURGUSAL TEST VERİLERİ
@@ -626,12 +1038,14 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
       'Örnek kontrol notu: Uygulanacak mevzuatın sürümü ve yürürlük tarihi henüz doğrulanmış değildir. Gerçek karar öncesinde Resmî Gazete ve yetkili kurumun güncel resmî kaynakları kontrol edilmelidir.';
 
     buildDraft();
+
     status('Uydurma örnek bilgiler yüklendi. Gerçek kişiye ait veri yoktur.');
   });
 
   // KARAR TASLAĞI OLUŞTURMA
   function buildDraft() {
-    const val = id => $(id).value.trim() || '[Bilgi girilmedi]';
+    const val = id =>
+      $(id).value.trim() || '[Bilgi girilmedi]';
 
     $('decision').value =
 `MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
@@ -667,7 +1081,9 @@ ${val('legal')}
 SON KONTROL
 Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın tümü ve yürürlükteki mevzuat esas alınarak verilmelidir.`;
 
-    status('Taslak oluşturuldu. Metni gözden geçirip gerekli alanları düzenleyebilirsiniz.');
+    status(
+      'Taslak oluşturuldu. Metni gözden geçirip gerekli alanları düzenleyebilirsiniz.'
+    );
   }
 
   $('buildDraft').addEventListener('click', buildDraft);
@@ -679,6 +1095,7 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
       status('Karar metni panoya kopyalandı.');
     } catch (e) {
       $('decision').select();
+
       status(
         'Otomatik kopyalama desteklenmedi. Metin seçildi; kopyalamak için Kopyala seçeneğini kullanın.'
       );
@@ -696,12 +1113,17 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
       }[c]));
 
     const content =
-      '<!doctype html><html><head><meta charset="utf-8"><title>Kurul Karar Taslağı</title></head>' +
-      '<body><pre style="font-family:Arial,sans-serif;white-space:pre-wrap">' +
+      '<!doctype html><html><head><meta charset="utf-8">' +
+      '<title>Kurul Karar Taslağı</title></head><body>' +
+      '<pre style="font-family:Arial,sans-serif;white-space:pre-wrap">' +
       escapeHtml($('decision').value) +
       '</pre></body></html>';
 
-    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    const blob = new Blob(
+      ['\ufeff', content],
+      { type: 'application/msword' }
+    );
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
 
@@ -714,7 +1136,9 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
 
     URL.revokeObjectURL(url);
 
-    status('Word uyumlu .doc dosyası indirildi. Microsoft Word ile açıp düzenleyebilirsiniz.');
+    status(
+      'Word uyumlu .doc dosyası indirildi. Microsoft Word ile açıp düzenleyebilirsiniz.'
+    );
   });
 
   // YAZDIRMA / PDF KAYDETME
@@ -723,5 +1147,6 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
   renderFiles();
 })();
 </script>
+
 </body>
 </html>
