@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#17324d">
-<title>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı — Prototip</title>
+<title>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı — OCR Prototipi</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{--navy:#17324d;--blue:#245b82;--pale:#eef4f8;--border:#d7e0e8;--ink:#1d2935;--muted:#5d6b78;--white:#fff;--warn:#fff4d8;--warnborder:#e4bd58}
 *{box-sizing:border-box} body{margin:0;background:#f5f7f9;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
@@ -31,6 +33,9 @@ video{width:100%;max-height:340px;object-fit:contain;display:none}
 .file-list{margin:8px 0 0;padding-left:18px;font-size:.88rem}
 #decision{min-height:380px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.91rem}
 .status{margin-top:8px;color:var(--muted);font-size:.82rem;overflow-wrap:anywhere}
+#ocrText{min-height:220px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem}
+.progress-wrap{height:8px;background:#e7edf2;border-radius:99px;overflow:hidden;margin-top:8px}
+#ocrProgress{height:100%;width:0;background:#245b82;transition:width .2s}
 footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);font-size:.82rem}
 @media(max-width:760px){main{grid-template-columns:1fr;margin-top:12px}.panel{padding:13px}header{padding:16px}header h1{font-size:1.12rem}#decision{min-height:300px}}
 @media print{header,.left-panel,.actions,footer,.notice{display:none!important}main{display:block;margin:0;padding:0}.panel{border:0;box-shadow:none}#decision{border:0;min-height:0}}
@@ -39,11 +44,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
 <body>
 <header>
   <h1>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı</h1>
-  <p>İlk prototip · Kamera/PDF girişi · Düzenlenebilir karar taslağı</p>
+  <p>OCR prototipi · Fotoğraf/PDF metin tanıma · Düzenlenebilir karar taslağı</p>
 </header>
 <main>
   <section class="panel left-panel">
-    <div class="notice"><strong>GÜVENLİ TEST MODU:</strong> Bu prototip yalnızca uydurma veriler içindir. Gerçek hasta bilgisi, sağlık raporu, T.C. kimlik numarası veya kurum içi belge yüklemeyin. Bu sürüm OCR yapmaz ve mevzuata göre karar vermez.</div>
+    <div class="notice"><strong>GÜVENLİ TEST MODU:</strong> Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin. OCR hatalı okuyabilir; metin asıl belgeyle karşılaştırılmalıdır. Bu prototip nihai tıbbi/idari karar vermez. OCR tarayıcıda çalışır; gerekli yazılım ve Türkçe dil modeli internetten indirilir. Kurumsal güvenlik onayı olmadan gerçek hasta belgesi kullanmayın.</div>
     <h2>1. Belge ekle</h2>
     <p class="small">Android telefonunuzda kamera izni vererek fotoğraf çekebilir veya cihazınızdaki PDF/görüntü dosyalarını seçebilirsiniz.</p>
     <div class="camera-wrap">
@@ -63,6 +68,11 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
     <div class="actions">
       <button id="clearFiles" class="secondary">Eklenenleri temizle</button>
     </div>
+    <div class="actions"><button id="runOcr">Fotoğraf/PDF’yi OCR ile metne dönüştür</button><button id="appendOcr" class="secondary">OCR metnini dosya özetine aktar</button></div>
+    <div class="progress-wrap" aria-label="OCR ilerlemesi"><div id="ocrProgress"></div></div>
+    <p id="ocrStatus" class="status">OCR için önce kamera fotoğrafı çekin veya PDF/görüntü dosyası seçin. Uzun belgeler zaman alabilir.</p>
+    <label for="ocrText">OCR ile tanınan metin (düzenlenebilir)</label>
+    <textarea id="ocrText" placeholder="Tanınan metin burada görünecek. Hataları asıl belgeyle karşılaştırarak düzeltin."></textarea>
     <p id="cameraStatus" class="status">Not: Tarayıcı kamerası genellikle HTTPS bağlantısı veya localhost gerektirir. HTML dosyasını doğrudan açınca kamera izni çalışmayabilir.</p>
     <h3>2. Örnek dosya bilgileri</h3>
     <p class="small">“Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.</p>
@@ -118,7 +128,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   </section>
 </main>
 <footer>
-  <p><strong>Prototip sınırları:</strong> Belgeler bu sayfada yalnızca seçilir/önizleme için listelenir; OCR, bulut yükleme, kullanıcı hesabı, veri tabanı ve mevzuat motoru bu sürümde yoktur. Sayfa kapatıldığında eklenen dosyalar kalıcı olarak saklanmaz. Kurumsal kullanımdan önce bilgi güvenliği, erişim kontrolü, kayıt/audit, veri koruma ve mevzuat gereksinimleri ayrıca tasarlanmalıdır.</p>
+  <p><strong>Prototip sınırları:</strong> OCR işlemi bu tarayıcı oturumunda yapılır; uygulama tarafından dosya sunucuya gönderilmez. Ancak OCR kütüphanesi ve dil modeli CDN üzerinden indirilir. Sayfa kapatıldığında seçilen dosyalar ve OCR metni kalıcı olarak saklanmaz. Kurumsal kullanımdan önce bilgi güvenliği, erişim kontrolü, kayıt/audit, veri koruma ve mevzuat gereksinimleri ayrıca tasarlanmalıdır.</p>
 </footer>
 <script>
 (() => {
@@ -127,6 +137,8 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   let capturedCount = 0;
   const captured = [];
   const selectedFiles = [];
+  let ocrBusy = false;
+  let ocrWorker = null;
 
   function status(msg){ $('outputStatus').textContent = msg; }
   function cameraStatus(msg){ $('cameraStatus').textContent = msg; }
@@ -164,7 +176,8 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     const del = document.createElement('button'); del.className='danger'; del.textContent='Kaldır';
     del.addEventListener('click',()=>{const i=captured.indexOf(url); if(i>=0)captured.splice(i,1); div.remove(); cameraStatus('Kalan kamera görüntüsü: '+captured.length);});
     div.append(img,cap,del); $('captured').append(div);
-    cameraStatus('Fotoğraf alındı. Bu prototipte görüntüden otomatik metin okunmaz.');
+    cameraStatus('Fotoğraf alındı. İsterseniz OCR düğmesiyle metne dönüştürebilirsiniz.');
+    renderFiles();
   });
 
   $('stopCamera').addEventListener('click', () => {
@@ -187,12 +200,96 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   }
   $('clearFiles').addEventListener('click',()=>{
     selectedFiles.length=0; captured.length=0; $('captured').innerHTML=''; renderFiles();
+    $('ocrText').value=''; $('ocrProgress').style.width='0%'; $('ocrStatus').textContent='OCR için belge seçin veya fotoğraf çekin.';
     cameraStatus('Eklenen dosyalar ve çekilen görüntüler temizlendi.');
+  });
+
+  function ocrStatus(msg){ $('ocrStatus').textContent=msg; }
+  function setProgress(value){ $('ocrProgress').style.width=Math.max(0,Math.min(100,value))+'%'; }
+  async function getOcrWorker(){
+    if (ocrWorker) return ocrWorker;
+    if (!window.Tesseract || !window.pdfjsLib) throw new Error('OCR/PDF kütüphaneleri yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenileyin.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    ocrStatus('Türkçe OCR dil modeli hazırlanıyor. İlk kullanımda indirme biraz sürebilir…');
+    ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
+      logger: m => {
+        if (m.status === 'loading tesseract core') ocrStatus('OCR motoru yükleniyor…');
+        else if (m.status === 'loading language traineddata') ocrStatus('Türkçe/İngilizce dil modeli indiriliyor…');
+        else if (m.status === 'recognizing text') ocrStatus('Metin tanınıyor… '+Math.round((m.progress||0)*100)+'%');
+      }
+    });
+    return ocrWorker;
+  }
+  async function recognizeImage(source, label, progressStart, progressSpan){
+    const worker=await getOcrWorker();
+    ocrStatus('Okunuyor: '+label);
+    const result=await worker.recognize(source);
+    setProgress(progressStart+progressSpan);
+    return (result.data.text||'').trim();
+  }
+  async function pdfToCanvases(file, onPage){
+    const data=new Uint8Array(await file.arrayBuffer());
+    const pdf=await pdfjsLib.getDocument({data}).promise;
+    const maxPages=20;
+    if(pdf.numPages>maxPages && !confirm('Bu PDF '+pdf.numPages+' sayfa. İlk '+maxPages+' sayfa OCR yapılacak. Devam edilsin mi?')) return 0;
+    const total=Math.min(pdf.numPages,maxPages);
+    for(let pageNum=1; pageNum<=total; pageNum++){
+      ocrStatus(file.name+' — PDF sayfası '+pageNum+'/'+total+' hazırlanıyor…');
+      const page=await pdf.getPage(pageNum);
+      const viewport=page.getViewport({scale:1.8});
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.floor(viewport.width); canvas.height=Math.floor(viewport.height);
+      await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+      await onPage(canvas, file.name+' — sayfa '+pageNum, pageNum, total);
+    }
+    return total;
+  }
+  $('runOcr').addEventListener('click', async()=>{
+    if(ocrBusy) return;
+    if(!selectedFiles.length && !captured.length){ocrStatus('Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.');return;}
+    ocrBusy=true; $('runOcr').disabled=true; $('appendOcr').disabled=true; setProgress(0);
+    const chunks=[];
+    try{
+      const imageFiles=selectedFiles.filter(f=>f.type.startsWith('image/'));
+      const pdfFiles=selectedFiles.filter(f=>f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      const totalUnits=captured.length+imageFiles.length+pdfFiles.reduce((n,f)=>n+Math.min(20,20),0);
+      let done=0;
+      const tick=()=>{done++;setProgress(totalUnits?Math.min(99,done/totalUnits*100):0);};
+      for(let i=0;i<captured.length;i++){
+        chunks.push('--- Kamera fotoğrafı '+(i+1)+' ---\n'+await recognizeImage(captured[i],'Kamera fotoğrafı '+(i+1),0,0));tick();
+      }
+      for(const f of imageFiles){chunks.push('--- '+f.name+' ---\n'+await recognizeImage(f,f.name,0,0));tick();}
+      for(const f of pdfFiles){
+        await pdfToCanvases(f,async(canvas,label,pageNum,total)=>{
+          const worker=await getOcrWorker();
+          ocrStatus('OCR yapılıyor: '+label+' ('+pageNum+'/'+total+')');
+          const result=await worker.recognize(canvas);
+          chunks.push('--- '+label+' ---\n'+(result.data.text||'').trim());
+          done++;setProgress(totalUnits?Math.min(99,done/totalUnits*100):0);
+        });
+      }
+      $('ocrText').value=chunks.filter(Boolean).join('\n\n');
+      setProgress(100);
+      ocrStatus('OCR tamamlandı. Metni mutlaka asıl belgeyle karşılaştırın; yanlış veya eksik karakterler olabilir.');
+      status('OCR metni oluşturuldu. Kontrol edip “OCR metnini dosya özetine aktar” düğmesini kullanabilirsiniz.');
+    }catch(err){
+      console.error(err);
+      ocrStatus('OCR yapılamadı: '+(err.message||String(err))+' Sayfayı yenileyip tekrar deneyin; gerekirse daha küçük dosya kullanın.');
+    }finally{ocrBusy=false;$('runOcr').disabled=false;$('appendOcr').disabled=false;}
+  });
+  $('appendOcr').addEventListener('click',()=>{
+    const text=$('ocrText').value.trim();
+    if(!text){ocrStatus('Aktarılacak OCR metni yok. Önce OCR işlemini çalıştırın.');return;}
+    const summary=$('summary');
+    summary.value=(summary.value.trim()?summary.value.trim()+'\n\n':'')+'[OCR İLE TANINAN METİN — ASIL BELGEYLE DOĞRULANMALIDIR]\n'+text;
+    status('OCR metni dosya özeti alanına eklendi. Hataları düzeltip taslağı oluşturabilirsiniz.');
+    summary.scrollIntoView({behavior:'smooth',block:'center'});
   });
 
   $('loadDemo').addEventListener('click',()=>{
     $('caseRef').value='DEMO-2026-001';
     $('examDate').value=new Date().toISOString().slice(0,10);
+    $('ocrText').value='';
     $('summary').value='TAMAMEN KURGUSAL ÖRNEK. Başvuranın klinik öyküsü, muayene bulguları ve tetkik sonuçları örnek amaçlı ayrı belgelerde bulunduğu varsayılmıştır. Gerçek kişiye ait veri içermez. Nihai değerlendirme için belgeler ve ölçütler yetkili hekim tarafından doğrulanmalıdır.';
     $('board').value='Örnek kontrol notu: Kurulda imzası bulunan hekimlerin branşları ve sayıları, ilgili tarihte yürürlükte olan yönetmelik ve güncel resmî kılavuz üzerinden kontrol edilmelidir. Bu örnekte gerçek kurul bileşimi tanımlanmamıştır.';
     $('legal').value='Örnek kontrol notu: Uygulanacak mevzuatın sürümü ve yürürlük tarihi henüz doğrulanmış değildir. Gerçek karar öncesinde Resmî Gazete ve yetkili kurumun güncel resmî kaynakları kontrol edilmelidir.';
@@ -228,7 +325,7 @@ ${val('legal')}
 - Klinik bulgular ve tetkikler asıl belgelerle karşılaştırılmalıdır.
 - İmzacı hekimlerin branş ve sayıları, ilgili tarihte yürürlükte olan düzenlemeye göre kontrol edilmelidir.
 - Uygulanacak mevzuatın resmî metni, maddesi ve yürürlük tarihi doğrulanmalıdır.
-- Bu prototip OCR yapmadığı ve mevzuat motoru içermediği için otomatik hukuki/tıbbi sonuç üretmez.
+- OCR çıktısı doğrulanmamış metindir; bu prototip otomatik hukuki/tıbbi sonuç üretmez.
 
 6. Kurul karar metni
 [Yetkili kurul değerlendirmesi sonrasında gerekçeli karar buraya yazılmalıdır.]
