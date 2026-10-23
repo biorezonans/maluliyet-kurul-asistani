@@ -9,19 +9,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{--navy:#17324d;--blue:#245b82;--pale:#eef4f8;--border:#d7e0e8;--ink:#1d2935;--muted:#5d6b78;--white:#fff;--warn:#fff4d8;--warnborder:#e4bd58}
-*{box-sizing:border-box} body{margin:0;background:#f5f7f9;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{background:var(--navy);color:#fff;padding:18px max(16px,calc((100% - 1100px)/2));}
-header h1{font-size:1.25rem;line-height:1.25;margin:0 0 6px} header p{margin:0;color:#dbe7f0;font-size:.92rem}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7f9;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:18px max(16px,calc((100% - 1100px)/2))}
+header h1{font-size:1.25rem;line-height:1.25;margin:0 0 6px}
+header p{margin:0;color:#dbe7f0;font-size:.92rem}
 main{max-width:1100px;margin:18px auto;padding:0 14px 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .panel{background:white;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 2px 8px #19354b0a;min-width:0}
-h2{font-size:1.05rem;margin:0 0 12px;color:var(--navy)} h3{font-size:.95rem;margin:16px 0 8px}
+h2{font-size:1.05rem;margin:0 0 12px;color:var(--navy)}
+h3{font-size:.95rem;margin:16px 0 8px}
 .notice{background:var(--warn);border:1px solid var(--warnborder);border-radius:10px;padding:11px 12px;font-size:.88rem;margin-bottom:14px}
 label{display:block;font-size:.88rem;font-weight:650;margin:12px 0 5px}
 input[type=text],input[type=date],textarea,select{width:100%;padding:10px 11px;border:1px solid #bfcbd5;border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
 textarea{min-height:82px;resize:vertical}
 button,.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;background:var(--blue);color:#fff;padding:10px 13px;font:600 .9rem system-ui;cursor:pointer;text-decoration:none;min-height:42px}
 button.secondary,.button.secondary{background:#eaf0f4;color:var(--navy);border:1px solid #cbd7e0}
-button.danger{background:#8d3030} button:disabled{opacity:.5;cursor:not-allowed}
+button.danger{background:#8d3030}
+button:disabled{opacity:.5;cursor:not-allowed}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .small{font-size:.82rem;color:var(--muted)}
 .camera-wrap{background:#0e1720;border-radius:10px;overflow:hidden;min-height:120px;display:flex;align-items:center;justify-content:center;color:#dbe7f0}
@@ -37,8 +41,19 @@ video{width:100%;max-height:340px;object-fit:contain;display:none}
 .progress-wrap{height:8px;background:#e7edf2;border-radius:99px;overflow:hidden;margin-top:8px}
 #ocrProgress{height:100%;width:0;background:#245b82;transition:width .2s}
 footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);font-size:.82rem}
-@media(max-width:760px){main{grid-template-columns:1fr;margin-top:12px}.panel{padding:13px}header{padding:16px}header h1{font-size:1.12rem}#decision{min-height:300px}}
-@media print{header,.left-panel,.actions,footer,.notice{display:none!important}main{display:block;margin:0;padding:0}.panel{border:0;box-shadow:none}#decision{border:0;min-height:0}}
+@media(max-width:760px){
+  main{grid-template-columns:1fr;margin-top:12px}
+  .panel{padding:13px}
+  header{padding:16px}
+  header h1{font-size:1.12rem}
+  #decision{min-height:300px}
+}
+@media print{
+  header,.left-panel,.actions,footer,.notice{display:none!important}
+  main{display:block;margin:0;padding:0}
+  .panel{border:0;box-shadow:none}
+  #decision{border:0;min-height:0}
+}
 </style>
 </head>
 <body>
@@ -46,57 +61,110 @@ footer{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:var(--muted);fon
   <h1>Maluliyet ve Çalışma Gücü Kaybı Kurul Kararları Asistanı</h1>
   <p>OCR prototipi · Fotoğraf/PDF metin tanıma · Düzenlenebilir karar taslağı</p>
 </header>
+
 <main>
   <section class="panel left-panel">
-    <div class="notice"><strong>GÜVENLİ TEST MODU:</strong> Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin. OCR hatalı okuyabilir; metin asıl belgeyle karşılaştırılmalıdır. Bu prototip nihai tıbbi/idari karar vermez. OCR tarayıcıda çalışır; gerekli yazılım ve Türkçe dil modeli internetten indirilir. Kurumsal güvenlik onayı olmadan gerçek hasta belgesi kullanmayın.</div>
+    <div class="notice">
+      <strong>GÜVENLİ TEST MODU:</strong>
+      Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin.
+      OCR hatalı okuyabilir; metin asıl belgeyle karşılaştırılmalıdır.
+      Bu prototip nihai tıbbi/idari karar vermez.
+      OCR tarayıcıda çalışır; gerekli yazılım ve Türkçe dil modeli internetten indirilir.
+      Kurumsal güvenlik onayı olmadan gerçek hasta belgesi kullanmayın.
+    </div>
+
     <h2>1. Belge ekle</h2>
-    <p class="small">Android telefonunuzda kamera izni vererek fotoğraf çekebilir veya cihazınızdaki PDF/görüntü dosyalarını seçebilirsiniz.</p>
+    <p class="small">
+      Android telefonunuzda kamera izni vererek fotoğraf çekebilir veya
+      cihazınızdaki PDF/görüntü dosyalarını seçebilirsiniz.
+    </p>
+
     <div class="camera-wrap">
       <video id="video" playsinline autoplay></video>
       <div id="cameraHint">Kamera kapalı. “Kamerayı aç” düğmesine basın.</div>
     </div>
+
     <div class="actions">
       <button id="startCamera">Kamerayı aç</button>
       <button id="capture" disabled>Fotoğraf çek</button>
       <button id="stopCamera" class="secondary" disabled>Kamerayı kapat</button>
     </div>
+
     <canvas id="canvas" hidden></canvas>
     <div id="captured"></div>
+
     <label for="files">PDF veya görüntü dosyası seç</label>
     <input id="files" type="file" accept="application/pdf,image/*" multiple>
-    <ul id="fileList" class="file-list"><li>Henüz dosya seçilmedi.</li></ul>
+
+    <ul id="fileList" class="file-list">
+      <li>Henüz dosya seçilmedi.</li>
+    </ul>
+
     <div class="actions">
       <button id="clearFiles" class="secondary">Eklenenleri temizle</button>
     </div>
-    <div class="actions"><button id="runOcr">Fotoğraf/PDF’yi OCR ile metne dönüştür</button><button id="appendOcr" class="secondary">OCR metnini dosya özetine aktar</button></div>
-    <div class="progress-wrap" aria-label="OCR ilerlemesi"><div id="ocrProgress"></div></div>
-    <p id="ocrStatus" class="status">OCR için önce kamera fotoğrafı çekin veya PDF/görüntü dosyası seçin. Uzun belgeler zaman alabilir.</p>
+
+    <div class="actions">
+      <button id="runOcr">Fotoğraf/PDF’yi OCR ile metne dönüştür</button>
+      <button id="appendOcr" class="secondary">OCR metnini dosya özetine aktar</button>
+    </div>
+
+    <div class="progress-wrap" aria-label="OCR ilerlemesi">
+      <div id="ocrProgress"></div>
+    </div>
+
+    <p id="ocrStatus" class="status">
+      OCR için önce kamera fotoğrafı çekin veya PDF/görüntü dosyası seçin.
+      Uzun belgeler zaman alabilir.
+    </p>
+
     <label for="ocrText">OCR ile tanınan metin (düzenlenebilir)</label>
     <textarea id="ocrText" placeholder="Tanınan metin burada görünecek. Hataları asıl belgeyle karşılaştırarak düzeltin."></textarea>
-    <p id="cameraStatus" class="status">Not: Tarayıcı kamerası genellikle HTTPS bağlantısı veya localhost gerektirir. HTML dosyasını doğrudan açınca kamera izni çalışmayabilir.</p>
+
+    <p id="cameraStatus" class="status">
+      Not: Tarayıcı kamerası genellikle HTTPS bağlantısı veya localhost gerektirir.
+      HTML dosyasını doğrudan açınca kamera izni çalışmayabilir.
+    </p>
+
     <h3>2. Örnek dosya bilgileri</h3>
-    <p class="small">“Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.</p>
-    <div class="actions"><button id="loadDemo" class="secondary">Örnek verileri yükle</button></div>
+    <p class="small">
+      “Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.
+    </p>
+
+    <div class="actions">
+      <button id="loadDemo" class="secondary">Örnek verileri yükle</button>
+    </div>
+
     <label for="caseRef">Dosya/başvuru kodu (uydurma)</label>
     <input id="caseRef" type="text" placeholder="Örn. DEMO-2026-001">
+
     <label for="examDate">Değerlendirme tarihi</label>
     <input id="examDate" type="date">
+
     <label for="summary">Dosya özeti / tıbbi bulgular</label>
     <textarea id="summary" placeholder="Belgelerden doğrulanmış bulguları buraya girin. Prototip otomatik okumaz."></textarea>
+
     <label for="board">Kurul bileşimi / branş kontrol notu</label>
     <textarea id="board" placeholder="İmzacı hekimlerin branş ve sayı kontrolüne ilişkin notlar"></textarea>
+
     <label for="legal">Mevzuat ve dayanak kontrol notu</label>
     <textarea id="legal" placeholder="Yürürlük tarihi kontrol edilmiş resmî mevzuat ve ilgili hükümler"></textarea>
   </section>
+
   <section class="panel">
     <h2>3. Karar taslağı</h2>
-    <p class="small">Metni doğrudan düzenleyebilirsiniz. Bu metin otomatik bir tıbbi/idari karar değildir; yetkili kurul değerlendirmesi ve mevzuat doğrulaması gerektirir.</p>
+    <p class="small">
+      Metni doğrudan düzenleyebilirsiniz. Bu metin otomatik bir tıbbi/idari karar değildir;
+      yetkili kurul değerlendirmesi ve mevzuat doğrulaması gerektirir.
+    </p>
+
     <div class="actions">
       <button id="buildDraft">Alanlardan taslak oluştur</button>
       <button id="copyText" class="secondary">Metni kopyala</button>
       <button id="downloadWord">Word uyumlu indir</button>
       <button id="print" class="secondary">Yazdır / PDF kaydet</button>
     </div>
+
     <label for="decision">Düzenlenebilir karar metni</label>
     <textarea id="decision">MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
 
@@ -124,12 +192,22 @@ Değerlendirme tarihi:
 [Yetkili kurul tarafından değerlendirilip tamamlanacaktır.]
 
 KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı kararı oluşturmaz. Nihai karar yetkili kurulun sorumluluğundadır.</textarea>
+
     <p id="outputStatus" class="status">Hazır. İlk olarak örnek verileri yükleyebilirsiniz.</p>
   </section>
 </main>
+
 <footer>
-  <p><strong>Prototip sınırları:</strong> OCR işlemi bu tarayıcı oturumunda yapılır; uygulama tarafından dosya sunucuya gönderilmez. Ancak OCR kütüphanesi ve dil modeli CDN üzerinden indirilir. Sayfa kapatıldığında seçilen dosyalar ve OCR metni kalıcı olarak saklanmaz. Kurumsal kullanımdan önce bilgi güvenliği, erişim kontrolü, kayıt/audit, veri koruma ve mevzuat gereksinimleri ayrıca tasarlanmalıdır.</p>
+  <p>
+    <strong>Prototip sınırları:</strong>
+    OCR işlemi bu tarayıcı oturumunda yapılır; uygulama tarafından dosya sunucuya gönderilmez.
+    Ancak OCR kütüphanesi ve dil modeli CDN üzerinden indirilir.
+    Sayfa kapatıldığında seçilen dosyalar ve OCR metni kalıcı olarak saklanmaz.
+    Kurumsal kullanımdan önce bilgi güvenliği, erişim kontrolü, kayıt/audit,
+    veri koruma ve mevzuat gereksinimleri ayrıca tasarlanmalıdır.
+  </p>
 </footer>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -140,165 +218,421 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
   let ocrBusy = false;
   let ocrWorker = null;
 
-  function status(msg){ $('outputStatus').textContent = msg; }
-  function cameraStatus(msg){ $('cameraStatus').textContent = msg; }
+  function status(msg) {
+    $('outputStatus').textContent = msg;
+  }
 
+  function cameraStatus(msg) {
+    $('cameraStatus').textContent = msg;
+  }
+
+  // KAMERA AÇMA
+  // Arka kameradan yüksek çözünürlük talep edilir.
+  // "ideal" değerleri zorunlu değildir; cihaz daha düşük çözünürlük sağlayabilir.
   $('startCamera').addEventListener('click', async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       cameraStatus('Bu ortam kamera erişimini desteklemiyor. HTTPS bağlantısı üzerinden açmayı deneyin.');
       return;
     }
+
     try {
-      stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}, audio:false});
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 3840 },
+          height: { ideal: 2160 }
+        },
+        audio: false
+      });
+
       $('video').srcObject = stream;
+      await $('video').play();
       $('video').style.display = 'block';
       $('cameraHint').style.display = 'none';
       $('capture').disabled = false;
       $('stopCamera').disabled = false;
       $('startCamera').disabled = true;
-      cameraStatus('Kamera açık. Belgeyi kadraja yerleştirip fotoğraf çekin.');
-    } catch(e) {
-      cameraStatus('Kamera açılamadı. Tarayıcı iznini kontrol edin ve sayfanın HTTPS üzerinden açıldığından emin olun. Hata: ' + e.message);
+
+      // Kameranın gerçekte hangi çözünürlükte görüntü verdiğini öğren.
+      const track = stream.getVideoTracks()[0];
+      const settings = track && track.getSettings ? track.getSettings() : {};
+      const actualWidth = settings.width || $('video').videoWidth || '?';
+      const actualHeight = settings.height || $('video').videoHeight || '?';
+
+      cameraStatus(
+        'Kamera açık. Gerçek görüntü çözünürlüğü: ' +
+        actualWidth + ' × ' + actualHeight +
+        ' piksel. Cihazın desteklediği çözünürlük kullanılır. ' +
+        'Belgeyi kadraja yerleştirip fotoğraf çekin.'
+      );
+    } catch (e) {
+      cameraStatus(
+        'Kamera açılamadı. Tarayıcı iznini kontrol edin ve sayfanın HTTPS üzerinden açıldığından emin olun. Hata: ' +
+        e.message
+      );
     }
   });
 
+  // FOTOĞRAF ÇEKME
   $('capture').addEventListener('click', () => {
     const video = $('video');
-    if (!video.videoWidth) { cameraStatus('Kamera görüntüsü henüz hazır değil. Birkaç saniye sonra tekrar deneyin.'); return; }
+
+    if (!video.videoWidth || !video.videoHeight) {
+      cameraStatus('Kamera görüntüsü henüz hazır değil. Birkaç saniye sonra tekrar deneyin.');
+      return;
+    }
+
     const canvas = $('canvas');
-    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
-    const url = canvas.toDataURL('image/jpeg',0.88);
-    captured.push(url); capturedCount++;
-    const div = document.createElement('div'); div.className='thumb';
-    const img = document.createElement('img'); img.src=url; img.alt='Çekilen belge sayfası '+capturedCount;
-    const cap = document.createElement('div'); cap.className='small'; cap.textContent='Kamera sayfası '+capturedCount;
-    const del = document.createElement('button'); del.className='danger'; del.textContent='Kaldır';
-    del.addEventListener('click',()=>{const i=captured.indexOf(url); if(i>=0)captured.splice(i,1); div.remove(); cameraStatus('Kalan kamera görüntüsü: '+captured.length);});
-    div.append(img,cap,del); $('captured').append(div);
-    cameraStatus('Fotoğraf alındı. İsterseniz OCR düğmesiyle metne dönüştürebilirsiniz.');
+
+    // Video hangi çözünürlükteyse fotoğraf da o çözünürlükte alınır.
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      cameraStatus('Fotoğraf hazırlanamıyor. Sayfayı yenileyip tekrar deneyin.');
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // JPEG kalitesi 0.88'den 0.98'e yükseltildi.
+    // Bu ayar sıkıştırmayı azaltır; dosya boyutu artabilir.
+    const url = canvas.toDataURL('image/jpeg', 0.98);
+
+    captured.push(url);
+    capturedCount++;
+
+    const div = document.createElement('div');
+    div.className = 'thumb';
+
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'Çekilen belge sayfası ' + capturedCount;
+
+    const cap = document.createElement('div');
+    cap.className = 'small';
+    cap.textContent = 'Kamera sayfası ' + capturedCount;
+
+    const del = document.createElement('button');
+    del.className = 'danger';
+    del.textContent = 'Kaldır';
+
+    del.addEventListener('click', () => {
+      const i = captured.indexOf(url);
+      if (i >= 0) captured.splice(i, 1);
+      div.remove();
+      renderFiles();
+      cameraStatus('Kalan kamera görüntüsü: ' + captured.length);
+    });
+
+    div.append(img, cap, del);
+    $('captured').append(div);
+
+    cameraStatus(
+      'Fotoğraf alındı. OCR işleminden önce görüntünün tamamını ve yazıların netliğini kontrol edin.'
+    );
+
     renderFiles();
   });
 
+  // KAMERAYI KAPATMA
   $('stopCamera').addEventListener('click', () => {
-    if (stream) stream.getTracks().forEach(t=>t.stop());
-    stream=null; $('video').srcObject=null; $('video').style.display='none';
-    $('cameraHint').style.display='block'; $('cameraHint').textContent='Kamera kapalı.';
-    $('capture').disabled=true; $('stopCamera').disabled=true; $('startCamera').disabled=false;
+    if (stream) {
+      stream.getTracks().forEach(t => t.stop());
+    }
+
+    stream = null;
+    $('video').srcObject = null;
+    $('video').style.display = 'none';
+    $('cameraHint').style.display = 'block';
+    $('cameraHint').textContent = 'Kamera kapalı.';
+    $('capture').disabled = true;
+    $('stopCamera').disabled = true;
+    $('startCamera').disabled = false;
+
     cameraStatus('Kamera kapatıldı.');
   });
 
+  // PDF VE GÖRÜNTÜ DOSYASI SEÇME
   $('files').addEventListener('change', e => {
-    for (const f of e.target.files) selectedFiles.push(f);
-    renderFiles(); e.target.value='';
+    for (const f of e.target.files) {
+      selectedFiles.push(f);
+    }
+    renderFiles();
+    e.target.value = '';
   });
-  function renderFiles(){
-    const ul=$('fileList'); ul.innerHTML='';
-    if(!selectedFiles.length && !captured.length){ul.innerHTML='<li>Henüz dosya seçilmedi.</li>';return;}
-    selectedFiles.forEach((f,i)=>{const li=document.createElement('li');li.textContent=f.name+' ('+Math.round(f.size/1024)+' KB)';ul.appendChild(li);});
-    if(captured.length){const li=document.createElement('li');li.textContent='Kamera görüntüsü: '+captured.length+' sayfa';ul.appendChild(li);}
+
+  function renderFiles() {
+    const ul = $('fileList');
+    ul.innerHTML = '';
+
+    if (!selectedFiles.length && !captured.length) {
+      ul.innerHTML = '<li>Henüz dosya seçilmedi.</li>';
+      return;
+    }
+
+    selectedFiles.forEach(f => {
+      const li = document.createElement('li');
+      li.textContent = f.name + ' (' + Math.round(f.size / 1024) + ' KB)';
+      ul.appendChild(li);
+    });
+
+    if (captured.length) {
+      const li = document.createElement('li');
+      li.textContent = 'Kamera görüntüsü: ' + captured.length + ' sayfa';
+      ul.appendChild(li);
+    }
   }
-  $('clearFiles').addEventListener('click',()=>{
-    selectedFiles.length=0; captured.length=0; $('captured').innerHTML=''; renderFiles();
-    $('ocrText').value=''; $('ocrProgress').style.width='0%'; $('ocrStatus').textContent='OCR için belge seçin veya fotoğraf çekin.';
+
+  // EKLENEN BELGELERİ TEMİZLEME
+  $('clearFiles').addEventListener('click', () => {
+    selectedFiles.length = 0;
+    captured.length = 0;
+    $('captured').innerHTML = '';
+    renderFiles();
+
+    $('ocrText').value = '';
+    $('ocrProgress').style.width = '0%';
+    $('ocrStatus').textContent = 'OCR için belge seçin veya fotoğraf çekin.';
+
     cameraStatus('Eklenen dosyalar ve çekilen görüntüler temizlendi.');
   });
 
-  function ocrStatus(msg){ $('ocrStatus').textContent=msg; }
-  function setProgress(value){ $('ocrProgress').style.width=Math.max(0,Math.min(100,value))+'%'; }
-  async function getOcrWorker(){
+  function ocrStatus(msg) {
+    $('ocrStatus').textContent = msg;
+  }
+
+  function setProgress(value) {
+    $('ocrProgress').style.width = Math.max(0, Math.min(100, value)) + '%';
+  }
+
+  // OCR MOTORUNU HAZIRLAMA
+  async function getOcrWorker() {
     if (ocrWorker) return ocrWorker;
-    if (!window.Tesseract || !window.pdfjsLib) throw new Error('OCR/PDF kütüphaneleri yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenileyin.');
-    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    if (!window.Tesseract || !window.pdfjsLib) {
+      throw new Error(
+        'OCR/PDF kütüphaneleri yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenileyin.'
+      );
+    }
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     ocrStatus('Türkçe OCR dil modeli hazırlanıyor. İlk kullanımda indirme biraz sürebilir…');
+
     ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
       logger: m => {
-        if (m.status === 'loading tesseract core') ocrStatus('OCR motoru yükleniyor…');
-        else if (m.status === 'loading language traineddata') ocrStatus('Türkçe/İngilizce dil modeli indiriliyor…');
-        else if (m.status === 'recognizing text') ocrStatus('Metin tanınıyor… '+Math.round((m.progress||0)*100)+'%');
+        if (m.status === 'loading tesseract core') {
+          ocrStatus('OCR motoru yükleniyor…');
+        } else if (m.status === 'loading language traineddata') {
+          ocrStatus('Türkçe/İngilizce dil modeli indiriliyor…');
+        } else if (m.status === 'recognizing text') {
+          ocrStatus('Metin tanınıyor… ' + Math.round((m.progress || 0) * 100) + '%');
+        }
       }
     });
+
     return ocrWorker;
   }
-  async function recognizeImage(source, label, progressStart, progressSpan){
-    const worker=await getOcrWorker();
-    ocrStatus('Okunuyor: '+label);
-    const result=await worker.recognize(source);
-    setProgress(progressStart+progressSpan);
-    return (result.data.text||'').trim();
+
+  async function recognizeImage(source, label, progressStart, progressSpan) {
+    const worker = await getOcrWorker();
+    ocrStatus('Okunuyor: ' + label);
+
+    const result = await worker.recognize(source);
+    setProgress(progressStart + progressSpan);
+
+    return (result.data.text || '').trim();
   }
-  async function pdfToCanvases(file, onPage){
-    const data=new Uint8Array(await file.arrayBuffer());
-    const pdf=await pdfjsLib.getDocument({data}).promise;
-    const maxPages=20;
-    if(pdf.numPages>maxPages && !confirm('Bu PDF '+pdf.numPages+' sayfa. İlk '+maxPages+' sayfa OCR yapılacak. Devam edilsin mi?')) return 0;
-    const total=Math.min(pdf.numPages,maxPages);
-    for(let pageNum=1; pageNum<=total; pageNum++){
-      ocrStatus(file.name+' — PDF sayfası '+pageNum+'/'+total+' hazırlanıyor…');
-      const page=await pdf.getPage(pageNum);
-      const viewport=page.getViewport({scale:1.8});
-      const canvas=document.createElement('canvas');
-      canvas.width=Math.floor(viewport.width); canvas.height=Math.floor(viewport.height);
-      await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-      await onPage(canvas, file.name+' — sayfa '+pageNum, pageNum, total);
+
+  // PDF SAYFALARINI OCR İÇİN GÖRÜNTÜYE DÖNÜŞTÜRME
+  async function pdfToCanvases(file, onPage) {
+    const data = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const maxPages = 20;
+
+    if (
+      pdf.numPages > maxPages &&
+      !confirm(
+        'Bu PDF ' + pdf.numPages +
+        ' sayfa. İlk ' + maxPages +
+        ' sayfa OCR yapılacak. Devam edilsin mi?'
+      )
+    ) {
+      return 0;
     }
+
+    const total = Math.min(pdf.numPages, maxPages);
+
+    for (let pageNum = 1; pageNum <= total; pageNum++) {
+      ocrStatus(file.name + ' — PDF sayfası ' + pageNum + '/' + total + ' hazırlanıyor…');
+
+      const page = await pdf.getPage(pageNum);
+
+      // PDF görüntüleme ölçeği mevcut test düzeniyle aynı bırakıldı.
+      const viewport = page.getViewport({ scale: 1.8 });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+
+      await page.render({
+        canvasContext: canvas.getContext('2d'),
+        viewport
+      }).promise;
+
+      await onPage(canvas, file.name + ' — sayfa ' + pageNum, pageNum, total);
+    }
+
     return total;
   }
-  $('runOcr').addEventListener('click', async()=>{
-    if(ocrBusy) return;
-    if(!selectedFiles.length && !captured.length){ocrStatus('Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.');return;}
-    ocrBusy=true; $('runOcr').disabled=true; $('appendOcr').disabled=true; setProgress(0);
-    const chunks=[];
-    try{
-      const imageFiles=selectedFiles.filter(f=>f.type.startsWith('image/'));
-      const pdfFiles=selectedFiles.filter(f=>f.type==='application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
-      const totalUnits=captured.length+imageFiles.length+pdfFiles.reduce((n,f)=>n+Math.min(20,20),0);
-      let done=0;
-      const tick=()=>{done++;setProgress(totalUnits?Math.min(99,done/totalUnits*100):0);};
-      for(let i=0;i<captured.length;i++){
-        chunks.push('--- Kamera fotoğrafı '+(i+1)+' ---\n'+await recognizeImage(captured[i],'Kamera fotoğrafı '+(i+1),0,0));tick();
+
+  // OCR ÇALIŞTIRMA
+  $('runOcr').addEventListener('click', async () => {
+    if (ocrBusy) return;
+
+    if (!selectedFiles.length && !captured.length) {
+      ocrStatus('Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.');
+      return;
+    }
+
+    ocrBusy = true;
+    $('runOcr').disabled = true;
+    $('appendOcr').disabled = true;
+    setProgress(0);
+
+    const chunks = [];
+
+    try {
+      const imageFiles = selectedFiles.filter(f => f.type.startsWith('image/'));
+      const pdfFiles = selectedFiles.filter(
+        f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+      );
+
+      const totalUnits =
+        captured.length +
+        imageFiles.length +
+        pdfFiles.reduce(n => n + 20, 0);
+
+      let done = 0;
+
+      const tick = () => {
+        done++;
+        setProgress(totalUnits ? Math.min(99, done / totalUnits * 100) : 0);
+      };
+
+      for (let i = 0; i < captured.length; i++) {
+        chunks.push(
+          '--- Kamera fotoğrafı ' + (i + 1) + ' ---\n' +
+          await recognizeImage(
+            captured[i],
+            'Kamera fotoğrafı ' + (i + 1),
+            0,
+            0
+          )
+        );
+        tick();
       }
-      for(const f of imageFiles){chunks.push('--- '+f.name+' ---\n'+await recognizeImage(f,f.name,0,0));tick();}
-      for(const f of pdfFiles){
-        await pdfToCanvases(f,async(canvas,label,pageNum,total)=>{
-          const worker=await getOcrWorker();
-          ocrStatus('OCR yapılıyor: '+label+' ('+pageNum+'/'+total+')');
-          const result=await worker.recognize(canvas);
-          chunks.push('--- '+label+' ---\n'+(result.data.text||'').trim());
-          done++;setProgress(totalUnits?Math.min(99,done/totalUnits*100):0);
+
+      for (const f of imageFiles) {
+        chunks.push(
+          '--- ' + f.name + ' ---\n' +
+          await recognizeImage(f, f.name, 0, 0)
+        );
+        tick();
+      }
+
+      for (const f of pdfFiles) {
+        await pdfToCanvases(f, async (canvas, label, pageNum, total) => {
+          const worker = await getOcrWorker();
+
+          ocrStatus('OCR yapılıyor: ' + label + ' (' + pageNum + '/' + total + ')');
+
+          const result = await worker.recognize(canvas);
+
+          chunks.push(
+            '--- ' + label + ' ---\n' +
+            (result.data.text || '').trim()
+          );
+
+          done++;
+          setProgress(totalUnits ? Math.min(99, done / totalUnits * 100) : 0);
         });
       }
-      $('ocrText').value=chunks.filter(Boolean).join('\n\n');
+
+      $('ocrText').value = chunks.filter(Boolean).join('\n\n');
       setProgress(100);
-      ocrStatus('OCR tamamlandı. Metni mutlaka asıl belgeyle karşılaştırın; yanlış veya eksik karakterler olabilir.');
-      status('OCR metni oluşturuldu. Kontrol edip “OCR metnini dosya özetine aktar” düğmesini kullanabilirsiniz.');
-    }catch(err){
+
+      ocrStatus(
+        'OCR tamamlandı. Metni mutlaka asıl belgeyle karşılaştırın; yanlış veya eksik karakterler olabilir.'
+      );
+
+      status(
+        'OCR metni oluşturuldu. Kontrol edip “OCR metnini dosya özetine aktar” düğmesini kullanabilirsiniz.'
+      );
+    } catch (err) {
       console.error(err);
-      ocrStatus('OCR yapılamadı: '+(err.message||String(err))+' Sayfayı yenileyip tekrar deneyin; gerekirse daha küçük dosya kullanın.');
-    }finally{ocrBusy=false;$('runOcr').disabled=false;$('appendOcr').disabled=false;}
-  });
-  $('appendOcr').addEventListener('click',()=>{
-    const text=$('ocrText').value.trim();
-    if(!text){ocrStatus('Aktarılacak OCR metni yok. Önce OCR işlemini çalıştırın.');return;}
-    const summary=$('summary');
-    summary.value=(summary.value.trim()?summary.value.trim()+'\n\n':'')+'[OCR İLE TANINAN METİN — ASIL BELGEYLE DOĞRULANMALIDIR]\n'+text;
-    status('OCR metni dosya özeti alanına eklendi. Hataları düzeltip taslağı oluşturabilirsiniz.');
-    summary.scrollIntoView({behavior:'smooth',block:'center'});
+
+      ocrStatus(
+        'OCR yapılamadı: ' + (err.message || String(err)) +
+        ' Sayfayı yenileyip tekrar deneyin; gerekirse daha küçük dosya kullanın.'
+      );
+    } finally {
+      ocrBusy = false;
+      $('runOcr').disabled = false;
+      $('appendOcr').disabled = false;
+    }
   });
 
-  $('loadDemo').addEventListener('click',()=>{
-    $('caseRef').value='DEMO-2026-001';
-    $('examDate').value=new Date().toISOString().slice(0,10);
-    $('ocrText').value='';
-    $('summary').value='TAMAMEN KURGUSAL ÖRNEK. Başvuranın klinik öyküsü, muayene bulguları ve tetkik sonuçları örnek amaçlı ayrı belgelerde bulunduğu varsayılmıştır. Gerçek kişiye ait veri içermez. Nihai değerlendirme için belgeler ve ölçütler yetkili hekim tarafından doğrulanmalıdır.';
-    $('board').value='Örnek kontrol notu: Kurulda imzası bulunan hekimlerin branşları ve sayıları, ilgili tarihte yürürlükte olan yönetmelik ve güncel resmî kılavuz üzerinden kontrol edilmelidir. Bu örnekte gerçek kurul bileşimi tanımlanmamıştır.';
-    $('legal').value='Örnek kontrol notu: Uygulanacak mevzuatın sürümü ve yürürlük tarihi henüz doğrulanmış değildir. Gerçek karar öncesinde Resmî Gazete ve yetkili kurumun güncel resmî kaynakları kontrol edilmelidir.';
+  // OCR METNİNİ DOSYA ÖZETİNE AKTARMA
+  $('appendOcr').addEventListener('click', () => {
+    const text = $('ocrText').value.trim();
+
+    if (!text) {
+      ocrStatus('Aktarılacak OCR metni yok. Önce OCR işlemini çalıştırın.');
+      return;
+    }
+
+    const summary = $('summary');
+
+    summary.value =
+      (summary.value.trim() ? summary.value.trim() + '\n\n' : '') +
+      '[OCR İLE TANINAN METİN — ASIL BELGEYLE DOĞRULANMALIDIR]\n' +
+      text;
+
+    status(
+      'OCR metni dosya özeti alanına eklendi. Hataları düzeltip taslağı oluşturabilirsiniz.'
+    );
+
+    summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // KURGUSAL TEST VERİLERİ
+  $('loadDemo').addEventListener('click', () => {
+    $('caseRef').value = 'DEMO-2026-001';
+    $('examDate').value = new Date().toISOString().slice(0, 10);
+    $('ocrText').value = '';
+
+    $('summary').value =
+      'TAMAMEN KURGUSAL ÖRNEK. Başvuranın klinik öyküsü, muayene bulguları ve tetkik sonuçları örnek amaçlı ayrı belgelerde bulunduğu varsayılmıştır. Gerçek kişiye ait veri içermez. Nihai değerlendirme için belgeler ve ölçütler yetkili hekim tarafından doğrulanmalıdır.';
+
+    $('board').value =
+      'Örnek kontrol notu: Kurulda imzası bulunan hekimlerin branşları ve sayıları, ilgili tarihte yürürlükte olan yönetmelik ve güncel resmî kılavuz üzerinden kontrol edilmelidir. Bu örnekte gerçek kurul bileşimi tanımlanmamıştır.';
+
+    $('legal').value =
+      'Örnek kontrol notu: Uygulanacak mevzuatın sürümü ve yürürlük tarihi henüz doğrulanmış değildir. Gerçek karar öncesinde Resmî Gazete ve yetkili kurumun güncel resmî kaynakları kontrol edilmelidir.';
+
     buildDraft();
     status('Uydurma örnek bilgiler yüklendi. Gerçek kişiye ait veri yoktur.');
   });
 
-  function buildDraft(){
-    const val=id=>$(id).value.trim()||'[Bilgi girilmedi]';
+  // KARAR TASLAĞI OLUŞTURMA
+  function buildDraft() {
+    const val = id => $(id).value.trim() || '[Bilgi girilmedi]';
+
     $('decision').value =
 `MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
 
@@ -308,8 +642,8 @@ Dosya/başvuru kodu: ${val('caseRef')}
 Değerlendirme tarihi: ${val('examDate')}
 
 1. İncelenen belgeler
-${selectedFiles.length ? selectedFiles.map(f=>'- '+f.name).join('\n') : '[Belge listesi manuel olarak doğrulanmalıdır.]'}
-${captured.length ? '- Kamera ile alınan görüntü sayısı: '+captured.length : ''}
+${selectedFiles.length ? selectedFiles.map(f => '- ' + f.name).join('\n') : '[Belge listesi manuel olarak doğrulanmalıdır.]'}
+${captured.length ? '- Kamera ile alınan görüntü sayısı: ' + captured.length : ''}
 
 2. Tıbbi öykü ve objektif bulgular
 ${val('summary')}
@@ -332,21 +666,60 @@ ${val('legal')}
 
 SON KONTROL
 Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın tümü ve yürürlükteki mevzuat esas alınarak verilmelidir.`;
+
     status('Taslak oluşturuldu. Metni gözden geçirip gerekli alanları düzenleyebilirsiniz.');
   }
-  $('buildDraft').addEventListener('click',buildDraft);
-  $('copyText').addEventListener('click',async()=>{
-    try{await navigator.clipboard.writeText($('decision').value);status('Karar metni panoya kopyalandı.');}
-    catch(e){$('decision').select();status('Otomatik kopyalama desteklenmedi. Metin seçildi; kopyalamak için uzun basıp Kopyala seçeneğini kullanın.');}
+
+  $('buildDraft').addEventListener('click', buildDraft);
+
+  // METNİ KOPYALAMA
+  $('copyText').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText($('decision').value);
+      status('Karar metni panoya kopyalandı.');
+    } catch (e) {
+      $('decision').select();
+      status(
+        'Otomatik kopyalama desteklenmedi. Metin seçildi; kopyalamak için Kopyala seçeneğini kullanın.'
+      );
+    }
   });
-  $('downloadWord').addEventListener('click',()=>{
-    const escapeHtml=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    const content='<!doctype html><html><head><meta charset="utf-8"><title>Kurul Karar Taslağı</title></head><body><pre style="font-family:Arial,sans-serif;white-space:pre-wrap">'+escapeHtml($('decision').value)+'</pre></body></html>';
-    const blob=new Blob(['\ufeff',content],{type:'application/msword'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download='kurul-karar-taslagi.doc';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+
+  // WORD UYUMLU DOSYA İNDİRME
+  $('downloadWord').addEventListener('click', () => {
+    const escapeHtml = s =>
+      s.replace(/[&<>"]/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;'
+      }[c]));
+
+    const content =
+      '<!doctype html><html><head><meta charset="utf-8"><title>Kurul Karar Taslağı</title></head>' +
+      '<body><pre style="font-family:Arial,sans-serif;white-space:pre-wrap">' +
+      escapeHtml($('decision').value) +
+      '</pre></body></html>';
+
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = 'kurul-karar-taslagi.doc';
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
     status('Word uyumlu .doc dosyası indirildi. Microsoft Word ile açıp düzenleyebilirsiniz.');
   });
-  $('print').addEventListener('click',()=>window.print());
+
+  // YAZDIRMA / PDF KAYDETME
+  $('print').addEventListener('click', () => window.print());
+
   renderFiles();
 })();
 </script>
