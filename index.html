@@ -13,18 +13,14 @@
 :root {
   --navy: #17324d;
   --blue: #245b82;
-  --pale: #eef4f8;
   --border: #d7e0e8;
   --ink: #1d2935;
   --muted: #5d6b78;
-  --white: #fff;
   --warn: #fff4d8;
   --warnborder: #e4bd58;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -61,7 +57,7 @@ main {
 }
 
 .panel {
-  background: white;
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
@@ -159,12 +155,11 @@ button:disabled {
   color: var(--muted);
 }
 
-/* KAMERA ÖNİZLEMESİ: DİKEY A4 ORANI */
+/* DİKEY A4 KAMERA ÇERÇEVESİ */
 .camera-wrap {
   position: relative;
   width: min(100%, 370px);
   aspect-ratio: 210 / 297;
-  min-height: unset;
   margin: 0 auto;
   background: #0e1720;
   border: 2px solid #8aa1b4;
@@ -176,18 +171,11 @@ button:disabled {
   color: #dbe7f0;
 }
 
-/*
-  Video kapsayıcının tamamını kaplar.
-  object-fit: cover, dikey A4 çerçevesine uymayan kenarları
-  merkezden kırpar. Fotoğraf çekilirken aynı kırpma JavaScript
-  ile uygulanır.
-*/
 video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  max-height: none;
   object-fit: cover;
   object-position: center center;
   display: none;
@@ -196,8 +184,8 @@ video {
 #cameraHint {
   padding: 18px;
   text-align: center;
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 
 #captured {
@@ -208,11 +196,11 @@ video {
 }
 
 .thumb {
-  position: relative;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 5px;
   background: #fff;
+  min-width: 0;
 }
 
 .thumb img {
@@ -234,6 +222,7 @@ video {
   margin: 8px 0 0;
   padding-left: 18px;
   font-size: .88rem;
+  overflow-wrap: anywhere;
 }
 
 #decision {
@@ -284,25 +273,11 @@ footer {
     margin-top: 12px;
   }
 
-  .panel {
-    padding: 13px;
-  }
-
-  header {
-    padding: 16px;
-  }
-
-  header h1 {
-    font-size: 1.12rem;
-  }
-
-  #decision {
-    min-height: 300px;
-  }
-
-  .camera-wrap {
-    width: min(100%, 370px);
-  }
+  .panel { padding: 13px; }
+  header { padding: 16px; }
+  header h1 { font-size: 1.12rem; }
+  #decision { min-height: 300px; }
+  .camera-wrap { width: min(100%, 370px); }
 }
 
 @media print {
@@ -342,117 +317,126 @@ footer {
 
 <main>
 
-  <section class="panel left-panel">
+<section class="panel left-panel">
 
-    <div class="notice">
-      <strong>GÜVENLİ TEST MODU:</strong>
-      Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin.
-      OCR hatalı okuyabilir; metin asıl belgeyle karşılaştırılmalıdır.
-      Bu prototip nihai tıbbi/idari karar vermez.
-      OCR tarayıcıda çalışır; gerekli yazılım ve Türkçe dil modeli internetten indirilir.
-      Kurumsal güvenlik onayı olmadan gerçek hasta belgesi kullanmayın.
-    </div>
+  <div class="notice">
+    <strong>GÜVENLİ TEST MODU:</strong>
+    Önce yalnızca uydurma veya kişisel olmayan belgelerle deneyin.
+    OCR hatalı okuyabilir; metin asıl belgeyle karşılaştırılmalıdır.
+    Bu prototip nihai tıbbi/idari karar vermez.
+    OCR tarayıcıda çalışır; gerekli yazılım ve Türkçe dil modeli internetten indirilir.
+    Kurumsal güvenlik onayı olmadan gerçek hasta belgesi kullanmayın.
+  </div>
 
-    <h2>1. Belge ekle</h2>
+  <h2>1. Belge ekle</h2>
 
-    <p class="small">
-      Kamerayı açarken telefonu dik tutun. Belgenin dört kenarını A4 biçimindeki
-      önizleme çerçevesine yerleştirin. Dilerseniz cihazınızdaki PDF veya görüntü
-      dosyalarını da seçebilirsiniz.
-    </p>
+  <p class="small">
+    Telefonu dik tutun ve belgenin dört kenarını A4 dikey çerçeveye yerleştirin.
+    Birden fazla kamera görünüyorsa aşağıdaki listeden farklı seçenekleri deneyebilirsiniz.
+  </p>
 
-    <div class="camera-wrap">
-      <video id="video" playsinline autoplay></video>
-      <div id="cameraHint">Kamera kapalı. “Kamerayı aç” düğmesine basın.</div>
-    </div>
+  <label for="cameraSelect">Kullanılacak kamera</label>
+  <select id="cameraSelect">
+    <option value="auto">Otomatik arka kamera (önerilen başlangıç)</option>
+  </select>
 
-    <div class="actions">
-      <button id="startCamera">Kamerayı aç</button>
-      <button id="capture" disabled>Fotoğraf çek</button>
-      <button id="stopCamera" class="secondary" disabled>Kamerayı kapat</button>
-    </div>
+  <p id="cameraChoiceNote" class="status">
+    Kamera listesi, kamera izni verildikten sonra görüntülenir.
+    Tarayıcının ayrı ayrı sunduğu kameralar listelenir; fiziksel lens adı her zaman belirtilmeyebilir.
+  </p>
 
-    <canvas id="canvas" hidden></canvas>
-    <div id="captured"></div>
+  <div class="camera-wrap">
+    <video id="video" playsinline autoplay></video>
+    <div id="cameraHint">Kamera kapalı. “Kamerayı aç” düğmesine basın.</div>
+  </div>
 
-    <label for="files">PDF veya görüntü dosyası seç</label>
-    <input id="files" type="file" accept="application/pdf,image/*" multiple>
+  <div class="actions">
+    <button id="startCamera">Kamerayı aç</button>
+    <button id="capture" disabled>Fotoğraf çek</button>
+    <button id="stopCamera" class="secondary" disabled>Kamerayı kapat</button>
+  </div>
 
-    <ul id="fileList" class="file-list">
-      <li>Henüz dosya seçilmedi.</li>
-    </ul>
+  <canvas id="canvas" hidden></canvas>
+  <div id="captured"></div>
 
-    <div class="actions">
-      <button id="clearFiles" class="secondary">Eklenenleri temizle</button>
-    </div>
+  <label for="files">PDF veya görüntü dosyası seç</label>
+  <input id="files" type="file" accept="application/pdf,image/*" multiple>
 
-    <div class="actions">
-      <button id="runOcr">Fotoğraf/PDF’yi OCR ile metne dönüştür</button>
-      <button id="appendOcr" class="secondary">OCR metnini dosya özetine aktar</button>
-    </div>
+  <ul id="fileList" class="file-list">
+    <li>Henüz dosya seçilmedi.</li>
+  </ul>
 
-    <div class="progress-wrap" aria-label="OCR ilerlemesi">
-      <div id="ocrProgress"></div>
-    </div>
+  <div class="actions">
+    <button id="clearFiles" class="secondary">Eklenenleri temizle</button>
+  </div>
 
-    <p id="ocrStatus" class="status">
-      OCR için önce kamera fotoğrafı çekin veya PDF/görüntü dosyası seçin.
-      Uzun belgeler zaman alabilir.
-    </p>
+  <div class="actions">
+    <button id="runOcr">Fotoğraf/PDF’yi OCR ile metne dönüştür</button>
+    <button id="appendOcr" class="secondary">OCR metnini dosya özetine aktar</button>
+  </div>
 
-    <label for="ocrText">OCR ile tanınan metin (düzenlenebilir)</label>
-    <textarea id="ocrText" placeholder="Tanınan metin burada görünecek. Hataları asıl belgeyle karşılaştırarak düzeltin."></textarea>
+  <div class="progress-wrap" aria-label="OCR ilerlemesi">
+    <div id="ocrProgress"></div>
+  </div>
 
-    <p id="cameraStatus" class="status">
-      Kamera bilgisi burada gösterilecektir. Kamera erişimi genellikle HTTPS bağlantısı gerektirir.
-    </p>
+  <p id="ocrStatus" class="status">
+    OCR için önce kamera fotoğrafı çekin veya PDF/görüntü dosyası seçin.
+    Uzun belgeler zaman alabilir.
+  </p>
 
-    <h3>2. Örnek dosya bilgileri</h3>
+  <label for="ocrText">OCR ile tanınan metin (düzenlenebilir)</label>
+  <textarea id="ocrText" placeholder="Tanınan metin burada görünecek. Hataları asıl belgeyle karşılaştırarak düzeltin."></textarea>
 
-    <p class="small">
-      “Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.
-    </p>
+  <p id="cameraStatus" class="status">
+    Kamera bilgileri burada gösterilecektir. Kamera erişimi genellikle HTTPS bağlantısı gerektirir.
+  </p>
 
-    <div class="actions">
-      <button id="loadDemo" class="secondary">Örnek verileri yükle</button>
-    </div>
+  <h3>2. Örnek dosya bilgileri</h3>
 
-    <label for="caseRef">Dosya/başvuru kodu (uydurma)</label>
-    <input id="caseRef" type="text" placeholder="Örn. DEMO-2026-001">
+  <p class="small">
+    “Örnek verileri yükle” yalnızca kurgu bilgiler ekler; gerçek bir kişiyi temsil etmez.
+  </p>
 
-    <label for="examDate">Değerlendirme tarihi</label>
-    <input id="examDate" type="date">
+  <div class="actions">
+    <button id="loadDemo" class="secondary">Örnek verileri yükle</button>
+  </div>
 
-    <label for="summary">Dosya özeti / tıbbi bulgular</label>
-    <textarea id="summary" placeholder="Belgelerden doğrulanmış bulguları buraya girin. Prototip otomatik okumaz."></textarea>
+  <label for="caseRef">Dosya/başvuru kodu (uydurma)</label>
+  <input id="caseRef" type="text" placeholder="Örn. DEMO-2026-001">
 
-    <label for="board">Kurul bileşimi / branş kontrol notu</label>
-    <textarea id="board" placeholder="İmzacı hekimlerin branş ve sayı kontrolüne ilişkin notlar"></textarea>
+  <label for="examDate">Değerlendirme tarihi</label>
+  <input id="examDate" type="date">
 
-    <label for="legal">Mevzuat ve dayanak kontrol notu</label>
-    <textarea id="legal" placeholder="Yürürlük tarihi kontrol edilmiş resmî mevzuat ve ilgili hükümler"></textarea>
+  <label for="summary">Dosya özeti / tıbbi bulgular</label>
+  <textarea id="summary" placeholder="Belgelerden doğrulanmış bulguları buraya girin. Prototip otomatik okumaz."></textarea>
 
-  </section>
+  <label for="board">Kurul bileşimi / branş kontrol notu</label>
+  <textarea id="board" placeholder="İmzacı hekimlerin branş ve sayı kontrolüne ilişkin notlar"></textarea>
 
-  <section class="panel">
+  <label for="legal">Mevzuat ve dayanak kontrol notu</label>
+  <textarea id="legal" placeholder="Yürürlük tarihi kontrol edilmiş resmî mevzuat ve ilgili hükümler"></textarea>
 
-    <h2>3. Karar taslağı</h2>
+</section>
 
-    <p class="small">
-      Metni doğrudan düzenleyebilirsiniz. Bu metin otomatik bir tıbbi/idari karar değildir;
-      yetkili kurul değerlendirmesi ve mevzuat doğrulaması gerektirir.
-    </p>
+<section class="panel">
 
-    <div class="actions">
-      <button id="buildDraft">Alanlardan taslak oluştur</button>
-      <button id="copyText" class="secondary">Metni kopyala</button>
-      <button id="downloadWord">Word uyumlu indir</button>
-      <button id="print" class="secondary">Yazdır / PDF kaydet</button>
-    </div>
+  <h2>3. Karar taslağı</h2>
 
-    <label for="decision">Düzenlenebilir karar metni</label>
+  <p class="small">
+    Metni doğrudan düzenleyebilirsiniz. Bu metin otomatik bir tıbbi/idari karar değildir;
+    yetkili kurul değerlendirmesi ve mevzuat doğrulaması gerektirir.
+  </p>
 
-    <textarea id="decision">MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
+  <div class="actions">
+    <button id="buildDraft">Alanlardan taslak oluştur</button>
+    <button id="copyText" class="secondary">Metni kopyala</button>
+    <button id="downloadWord">Word uyumlu indir</button>
+    <button id="print" class="secondary">Yazdır / PDF kaydet</button>
+  </div>
+
+  <label for="decision">Düzenlenebilir karar metni</label>
+
+  <textarea id="decision">MALULİYET VE ÇALIŞMA GÜCÜ KAYBI DEĞERLENDİRME — TASLAK
 
 Bu belge prototip amacıyla hazırlanmış bir taslaktır. Nihai kurul kararı değildir.
 
@@ -479,12 +463,11 @@ Değerlendirme tarihi:
 
 KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı kararı oluşturmaz. Nihai karar yetkili kurulun sorumluluğundadır.</textarea>
 
-    <p id="outputStatus" class="status">
-      Hazır. İlk olarak örnek verileri yükleyebilirsiniz.
-    </p>
+  <p id="outputStatus" class="status">
+    Hazır. İlk olarak örnek verileri yükleyebilirsiniz.
+  </p>
 
-  </section>
-
+</section>
 </main>
 
 <footer>
@@ -492,7 +475,8 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     <strong>Prototip sınırları:</strong>
     OCR işlemi bu tarayıcı oturumunda yapılır; uygulama tarafından dosya sunucuya gönderilmez.
     Ancak OCR kütüphanesi ve dil modeli CDN üzerinden indirilir.
-    Sayfa kapatıldığında seçilen dosyalar ve OCR metni kalıcı olarak saklanmaz.
+    Kamera seçiminin saklanması yalnızca kamera cihaz kimliğini tarayıcıda tutar.
+    Kamera kimlikleri tarayıcıya veya oturuma bağlı olarak değişebilir.
     Kurumsal kullanımdan önce bilgi güvenliği, erişim kontrolü, kayıt/audit,
     veri koruma ve mevzuat gereksinimleri ayrıca tasarlanmalıdır.
   </p>
@@ -502,8 +486,11 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 (() => {
   const $ = id => document.getElementById(id);
 
-  // A4 dikey sayfa oranı: genişlik / yükseklik
+  // A4 dikey sayfa oranı: 210 / 297.
   const A4_RATIO = 210 / 297;
+
+  // Seçilen kamera tercihi bu tarayıcıda saklanır.
+  const CAMERA_STORAGE_KEY = 'maluliyetKurulCameraDeviceId';
 
   let stream = null;
   let capturedCount = 0;
@@ -513,6 +500,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
   let ocrBusy = false;
   let ocrWorker = null;
+  let cameraDevices = [];
 
   function status(msg) {
     $('outputStatus').textContent = msg;
@@ -522,70 +510,340 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     $('cameraStatus').textContent = msg;
   }
 
-  // KAMERA AÇMA
-  $('startCamera').addEventListener('click', async () => {
+  function getSavedCameraId() {
+    try {
+      return localStorage.getItem(CAMERA_STORAGE_KEY) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveCameraId(id) {
+    try {
+      if (id) {
+        localStorage.setItem(CAMERA_STORAGE_KEY, id);
+      } else {
+        localStorage.removeItem(CAMERA_STORAGE_KEY);
+      }
+    } catch (e) {
+      // Tarayıcı depolaması kapalıysa kamera yine kullanılabilir.
+    }
+  }
+
+  function stopCurrentStream() {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    stream = null;
+    $('video').srcObject = null;
+  }
+
+  /*
+    Kamera seçeneklerini güncelle.
+    Listede yalnızca tarayıcının erişime açtığı kameralar gösterilir.
+    Kamera etiketleri fiziksel lensin 23 mm ana kamera olduğunu garanti etmez.
+  */
+  async function refreshCameraOptions(preferredValue) {
+    const select = $('cameraSelect');
+
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+
+      cameraDevices = devices.filter(device => device.kind === 'videoinput');
+
+      const previousValue =
+        preferredValue !== undefined
+          ? preferredValue
+          : select.value || 'auto';
+
+      select.innerHTML = '';
+
+      const autoOption = document.createElement('option');
+      autoOption.value = 'auto';
+      autoOption.textContent = 'Otomatik arka kamera (önerilen başlangıç)';
+      select.appendChild(autoOption);
+
+      cameraDevices.forEach((device, index) => {
+        const option = document.createElement('option');
+        option.value = device.deviceId;
+
+        const label = device.label && device.label.trim()
+          ? device.label.trim()
+          : 'Kamera ' + (index + 1) + ' (adı tarayıcı tarafından gösterilmiyor)';
+
+        option.textContent = (index + 1) + '. ' + label;
+        select.appendChild(option);
+      });
+
+      const exists = previousValue === 'auto' ||
+        cameraDevices.some(device => device.deviceId === previousValue);
+
+      select.value = exists ? previousValue : 'auto';
+
+      if (!cameraDevices.length) {
+        $('cameraChoiceNote').textContent =
+          'Tarayıcı kullanılabilir kamera listesini göstermedi. Kamera izni verildikten sonra tekrar deneyin.';
+      } else if (cameraDevices.length === 1) {
+        $('cameraChoiceNote').textContent =
+          'Tarayıcı yalnızca bir kamera seçeneği gösteriyor. Bu, telefonda yalnızca bir fiziksel kamera bulunduğu anlamına gelmez; diğer lensler tarayıcıya ayrı sunulmamış olabilir.';
+      } else {
+        $('cameraChoiceNote').textContent =
+          cameraDevices.length +
+          ' kamera seçeneği bulundu. İsimler tarayıcıdan gelir; ana kamera, ultra geniş açı ve telefoto lenslerin hangisi olduğunu adından kesin olarak anlamak her zaman mümkün değildir.';
+      }
+
+    } catch (e) {
+      $('cameraChoiceNote').textContent =
+        'Kamera listesi alınamadı. Otomatik arka kamera seçeneğini kullanabilirsiniz.';
+    }
+  }
+
+  function updateCameraDetails(mode) {
+    if (!stream) {
+      return;
+    }
+
+    const video = $('video');
+    const track = stream.getVideoTracks()[0];
+
+    const settings = track && track.getSettings
+      ? track.getSettings()
+      : {};
+
+    const width = settings.width || video.videoWidth || '?';
+    const height = settings.height || video.videoHeight || '?';
+
+    const deviceId = settings.deviceId || null;
+
+    const device = cameraDevices.find(
+      item => item.deviceId && item.deviceId === deviceId
+    );
+
+    const cameraName =
+      (device && device.label) ||
+      (track && track.label) ||
+      'Kamera adı tarayıcı tarafından belirtilmedi';
+
+    const selectedMode = mode ||
+      ($('cameraSelect').value === 'auto' ? 'auto' : 'manual');
+
+    const modeText = selectedMode === 'auto'
+      ? 'Otomatik arka kamera'
+      : 'Elle seçilen kamera';
+
+    cameraStatus(
+      modeText + ' etkin. Kamera: ' + cameraName +
+      '. Görüntü çözünürlüğü: ' + width + ' × ' + height +
+      ' piksel. Önizleme ve çekilen fotoğraf A4 dikey oranına göre düzenlenir.'
+    );
+  }
+
+  /*
+    Kamerayı aç.
+    deviceId verilirse o cihaz denenir.
+    Verilmezse environment, yani arka kamera tercih edilir.
+  */
+  async function openCamera(deviceId = null) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      cameraStatus(
-        'Bu ortam kamera erişimini desteklemiyor. HTTPS bağlantısı üzerinden açmayı deneyin.'
+      throw new Error(
+        'Bu tarayıcı kamera erişimini desteklemiyor. HTTPS üzerinden açmayı deneyin.'
       );
+    }
+
+    stopCurrentStream();
+
+    const videoConstraints = {
+      width: { ideal: 2160 },
+      height: { ideal: 3055 },
+      aspectRatio: { ideal: A4_RATIO }
+    };
+
+    if (deviceId) {
+      videoConstraints.deviceId = { exact: deviceId };
+    } else {
+      videoConstraints.facingMode = { ideal: 'environment' };
+    }
+
+    const newStream = await navigator.mediaDevices.getUserMedia({
+      video: videoConstraints,
+      audio: false
+    });
+
+    stream = newStream;
+
+    const video = $('video');
+    video.srcObject = stream;
+
+    await video.play();
+
+    video.style.display = 'block';
+    $('cameraHint').style.display = 'none';
+
+    $('capture').disabled = false;
+    $('stopCamera').disabled = false;
+    $('startCamera').disabled = true;
+
+    // Kamera izni sonrasında tarayıcının açıkladığı cihaz listesini al.
+    await refreshCameraOptions(
+      deviceId ? deviceId : 'auto'
+    );
+
+    updateCameraDetails(deviceId ? 'manual' : 'auto');
+
+    return true;
+  }
+
+  // KAMERAYI İLK AÇMA
+  $('startCamera').addEventListener('click', async () => {
+    $('startCamera').disabled = true;
+
+    const dropdownChoice = $('cameraSelect').value;
+    const savedId = getSavedCameraId();
+
+    // Önce geçerli ekrandaki seçim, yoksa daha önce kaydedilen cihaz denenir.
+    const preferredId =
+      dropdownChoice && dropdownChoice !== 'auto'
+        ? dropdownChoice
+        : savedId;
+
+    try {
+      if (preferredId) {
+        try {
+          await openCamera(preferredId);
+
+          $('cameraSelect').value = preferredId;
+          saveCameraId(preferredId);
+
+          updateCameraDetails('manual');
+
+          $('cameraChoiceNote').textContent =
+            'Kaydedilmiş veya seçilmiş kamera açıldı. İsterseniz listeden farklı bir kamera seçebilirsiniz.';
+
+        } catch (preferredError) {
+          // Seçili kamera artık mevcut değilse otomatik arka kameraya dön.
+          saveCameraId(null);
+
+          await openCamera(null);
+
+          $('cameraSelect').value = 'auto';
+
+          cameraStatus(
+            'Önceden seçilen kamera açılamadı. Otomatik arka kamera açıldı. ' +
+            'Hata ayrıntısı: ' + preferredError.message
+          );
+        }
+      } else {
+        await openCamera(null);
+        $('cameraSelect').value = 'auto';
+        updateCameraDetails('auto');
+      }
+
+    } catch (e) {
+      stopCurrentStream();
+
+      $('video').style.display = 'none';
+      $('cameraHint').style.display = 'block';
+      $('cameraHint').textContent =
+        'Kamera açılamadı. Tarayıcı iznini kontrol edip tekrar deneyin.';
+
+      $('capture').disabled = true;
+      $('stopCamera').disabled = true;
+      $('startCamera').disabled = false;
+
+      cameraStatus(
+        'Kamera açılamadı. Sayfanın HTTPS üzerinden açıldığını ve kamera iznini kontrol edin. Hata: ' +
+        e.message
+      );
+    } finally {
+      if (!stream) {
+        $('startCamera').disabled = false;
+      }
+    }
+  });
+
+  // KAMERA SEÇİM MENÜSÜ DEĞİŞTİĞİNDE
+  $('cameraSelect').addEventListener('change', async () => {
+    const selectedId = $('cameraSelect').value;
+
+    if (selectedId === 'auto') {
+      saveCameraId(null);
+
+      $('cameraChoiceNote').textContent =
+        'Otomatik seçim etkin. Tarayıcıdan arka kamera tercih etmesi istenir; belirli bir fiziksel lens garanti edilemez.';
+
+      if (!stream) {
+        return;
+      }
+
+      try {
+        await openCamera(null);
+        $('cameraSelect').value = 'auto';
+        updateCameraDetails('auto');
+      } catch (e) {
+        cameraStatus('Otomatik arka kamera açılamadı: ' + e.message);
+      }
+
+      return;
+    }
+
+    // Kullanıcının manuel seçimi sonraki kullanım için saklanır.
+    saveCameraId(selectedId);
+
+    if (!stream) {
+      $('cameraChoiceNote').textContent =
+        'Kamera tercihi bu tarayıcıda saklandı. Kamera açıldığında seçilen cihaz kullanılmaya çalışılacak.';
       return;
     }
 
     try {
-      /*
-        Dikey A4 oranına yakın bir görüntü istenir.
-        ideal kullanıldığı için cihazın desteklemediği bir çözünürlük
-        talebi kameranın açılmasını engellememelidir.
-      */
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: 'environment' },
-          aspectRatio: { ideal: A4_RATIO },
-          width: { ideal: 2160 },
-          height: { ideal: 3055 }
-        },
-        audio: false
-      });
+      await openCamera(selectedId);
 
-      const video = $('video');
-
-      video.srcObject = stream;
-      await video.play();
-
-      video.style.display = 'block';
-      $('cameraHint').style.display = 'none';
-
-      $('capture').disabled = false;
-      $('stopCamera').disabled = false;
-      $('startCamera').disabled = true;
-
-      const track = stream.getVideoTracks()[0];
-      const settings = track && track.getSettings ? track.getSettings() : {};
-
-      const actualWidth = settings.width || video.videoWidth || '?';
-      const actualHeight = settings.height || video.videoHeight || '?';
-
-      cameraStatus(
-        'Kamera açık. Kaynak çözünürlük: ' +
-        actualWidth + ' × ' + actualHeight +
-        ' piksel. Önizleme ve çekilen fotoğraf A4 dikey oranına göre düzenlenir. ' +
-        'Telefonu dik tutun ve belgenin dört kenarını çerçeveye alın.'
-      );
+      $('cameraSelect').value = selectedId;
+      saveCameraId(selectedId);
+      updateCameraDetails('manual');
 
     } catch (e) {
-      cameraStatus(
-        'Kamera açılamadı. Tarayıcı iznini kontrol edin ve sayfanın HTTPS üzerinden açıldığından emin olun. Hata: ' +
-        e.message
-      );
+      saveCameraId(null);
+
+      try {
+        await openCamera(null);
+        $('cameraSelect').value = 'auto';
+
+        cameraStatus(
+          'Seçilen kamera açılamadı; otomatik arka kamera açıldı. Hata: ' +
+          e.message
+        );
+      } catch (fallbackError) {
+        stopCurrentStream();
+
+        $('capture').disabled = true;
+        $('stopCamera').disabled = true;
+        $('startCamera').disabled = false;
+
+        cameraStatus(
+          'Seçilen kamera ve otomatik arka kamera açılamadı. ' +
+          fallbackError.message
+        );
+      }
     }
   });
 
-  /*
-    KAMERA GÖRÜNTÜSÜNÜ A4 ORANINDA KIRPMA
+  // KAMERA LİSTESİNDE CİHAZ DEĞİŞİKLİĞİ OLURSA LİSTEYİ YENİLE
+  if (navigator.mediaDevices &&
+      typeof navigator.mediaDevices.addEventListener === 'function') {
+    navigator.mediaDevices.addEventListener('devicechange', async () => {
+      const currentChoice = $('cameraSelect').value || 'auto';
+      await refreshCameraOptions(currentChoice);
+    });
+  }
 
-    Önizlemede CSS object-fit: cover kullanılır.
-    Burada aynı orta kırpma işlemi canvas üzerinde uygulanır.
-    Böylece ekranda görünen kadraj ile OCR motoruna giden görüntü eşleşir.
+  /*
+    KAMERA GÖRÜNTÜSÜNÜ A4 ORANINDA KIRPMA.
+
+    Önizlemede object-fit: cover kullanılır.
+    Burada da aynı merkezden kırpma canvas üzerinde uygulanır.
+    Böylece önizlemede görünen kadraj ile OCR'ye gönderilen görüntü uyumlu olur.
   */
   function drawVideoAsA4(video, canvas) {
     const sourceWidth = video.videoWidth;
@@ -603,26 +861,15 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     let sh = sourceHeight;
 
     if (sourceRatio > A4_RATIO) {
-      /*
-        Kaynak görüntü A4 çerçevesinden daha geniş.
-        Sağ ve soldan eşit miktarda kırpılır.
-      */
+      // Görüntü A4 çerçevesinden daha geniş; sağ ve soldan kırp.
       sw = sourceHeight * A4_RATIO;
       sx = (sourceWidth - sw) / 2;
     } else if (sourceRatio < A4_RATIO) {
-      /*
-        Kaynak görüntü A4 çerçevesinden daha dar ve uzun.
-        Üstten ve alttan eşit miktarda kırpılır.
-      */
+      // Görüntü daha dar ve uzun; üstten ve alttan kırp.
       sh = sourceWidth / A4_RATIO;
       sy = (sourceHeight - sh) / 2;
     }
 
-    /*
-      Canvas, kaynak görüntüdeki kırpılmış alanın çözünürlüğünü
-      mümkün olduğunca korur. Görüntü gereksiz yere sabit ve düşük
-      bir piksel ölçüsüne küçültülmez.
-    */
     canvas.width = Math.max(1, Math.round(sw));
     canvas.height = Math.max(1, Math.round(sh));
 
@@ -651,11 +898,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
       return;
     }
 
-    /*
-      JPEG kalitesi 0.98:
-      0.88 değerine göre daha az sıkıştırma uygulanır.
-      Bu, dosya boyutunu artırabilir.
-    */
+    // Daha az JPEG sıkıştırması için kalite 0.98 olarak ayarlanmıştır.
     const url = canvas.toDataURL('image/jpeg', 0.98);
 
     captured.push(url);
@@ -695,9 +938,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     $('captured').append(div);
 
     cameraStatus(
-      'Fotoğraf A4 dikey oranında hazırlandı. Görüntü çözünürlüğü: ' +
+      'Fotoğraf A4 dikey oranında hazırlandı. Çözünürlük: ' +
       canvas.width + ' × ' + canvas.height +
-      ' piksel. Belgenin tamamının görüntüye girdiğini kontrol edin.'
+      ' piksel. Belgenin dört kenarının da görüntüde olduğundan emin olun.'
     );
 
     renderFiles();
@@ -705,29 +948,26 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
   // KAMERAYI KAPATMA
   $('stopCamera').addEventListener('click', () => {
-    if (stream) {
-      stream.getTracks().forEach(t => t.stop());
-    }
+    stopCurrentStream();
 
-    stream = null;
-
-    $('video').srcObject = null;
     $('video').style.display = 'none';
-
     $('cameraHint').style.display = 'block';
-    $('cameraHint').textContent = 'Kamera kapalı. “Kamerayı aç” düğmesine basın.';
+    $('cameraHint').textContent =
+      'Kamera kapalı. “Kamerayı aç” düğmesine basın.';
 
     $('capture').disabled = true;
     $('stopCamera').disabled = true;
     $('startCamera').disabled = false;
 
-    cameraStatus('Kamera kapatıldı.');
+    cameraStatus(
+      'Kamera kapatıldı. Kaydedilen kamera tercihi sonraki kullanımda denenebilir.'
+    );
   });
 
   // PDF VE GÖRÜNTÜ DOSYASI SEÇME
   $('files').addEventListener('change', e => {
-    for (const f of e.target.files) {
-      selectedFiles.push(f);
+    for (const file of e.target.files) {
+      selectedFiles.push(file);
     }
 
     renderFiles();
@@ -743,9 +983,10 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
       return;
     }
 
-    selectedFiles.forEach(f => {
+    selectedFiles.forEach(file => {
       const li = document.createElement('li');
-      li.textContent = f.name + ' (' + Math.round(f.size / 1024) + ' KB)';
+      li.textContent =
+        file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
       ul.appendChild(li);
     });
 
@@ -766,7 +1007,8 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
     $('ocrText').value = '';
     $('ocrProgress').style.width = '0%';
-    $('ocrStatus').textContent = 'OCR için belge seçin veya fotoğraf çekin.';
+    $('ocrStatus').textContent =
+      'OCR için belge seçin veya fotoğraf çekin.';
 
     cameraStatus('Eklenen dosyalar ve çekilen görüntüler temizlendi.');
   });
@@ -857,7 +1099,7 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
       const page = await pdf.getPage(pageNum);
 
-      // PDF ölçeği bu değişiklikte korunmuştur.
+      // Önceki PDF ölçeği korunmuştur.
       const viewport = page.getViewport({ scale: 1.8 });
 
       const canvas = document.createElement('canvas');
@@ -887,7 +1129,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     }
 
     if (!selectedFiles.length && !captured.length) {
-      ocrStatus('Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.');
+      ocrStatus(
+        'Önce bir fotoğraf çekin veya PDF/görüntü dosyası seçin.'
+      );
       return;
     }
 
@@ -900,12 +1144,13 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
     try {
       const imageFiles = selectedFiles.filter(
-        f => f.type.startsWith('image/')
+        file => file.type.startsWith('image/')
       );
 
       const pdfFiles = selectedFiles.filter(
-        f => f.type === 'application/pdf' ||
-             f.name.toLowerCase().endsWith('.pdf')
+        file =>
+          file.type === 'application/pdf' ||
+          file.name.toLowerCase().endsWith('.pdf')
       );
 
       const totalUnits =
@@ -937,36 +1182,43 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
         tick();
       }
 
-      for (const f of imageFiles) {
-        const text = await recognizeImage(f, f.name, 0, 0);
+      for (const file of imageFiles) {
+        const text = await recognizeImage(
+          file,
+          file.name,
+          0,
+          0
+        );
 
-        chunks.push('--- ' + f.name + ' ---\n' + text);
-
+        chunks.push('--- ' + file.name + ' ---\n' + text);
         tick();
       }
 
-      for (const f of pdfFiles) {
-        await pdfToCanvases(f, async (canvas, label, pageNum, total) => {
-          const worker = await getOcrWorker();
+      for (const file of pdfFiles) {
+        await pdfToCanvases(
+          file,
+          async (canvas, label, pageNum, total) => {
+            const worker = await getOcrWorker();
 
-          ocrStatus(
-            'OCR yapılıyor: ' + label +
-            ' (' + pageNum + '/' + total + ')'
-          );
+            ocrStatus(
+              'OCR yapılıyor: ' + label +
+              ' (' + pageNum + '/' + total + ')'
+            );
 
-          const result = await worker.recognize(canvas);
+            const result = await worker.recognize(canvas);
 
-          chunks.push(
-            '--- ' + label + ' ---\n' +
-            (result.data.text || '').trim()
-          );
+            chunks.push(
+              '--- ' + label + ' ---\n' +
+              (result.data.text || '').trim()
+            );
 
-          done++;
+            done++;
 
-          setProgress(
-            totalUnits ? Math.min(99, done / totalUnits * 100) : 0
-          );
-        });
+            setProgress(
+              totalUnits ? Math.min(99, done / totalUnits * 100) : 0
+            );
+          }
+        );
       }
 
       $('ocrText').value = chunks.filter(Boolean).join('\n\n');
@@ -1001,7 +1253,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
     const text = $('ocrText').value.trim();
 
     if (!text) {
-      ocrStatus('Aktarılacak OCR metni yok. Önce OCR işlemini çalıştırın.');
+      ocrStatus(
+        'Aktarılacak OCR metni yok. Önce OCR işlemini çalıştırın.'
+      );
       return;
     }
 
@@ -1039,7 +1293,9 @@ KONTROL: Otomatik taslak, tek başına maluliyet veya çalışma gücü kaybı k
 
     buildDraft();
 
-    status('Uydurma örnek bilgiler yüklendi. Gerçek kişiye ait veri yoktur.');
+    status(
+      'Uydurma örnek bilgiler yüklendi. Gerçek kişiye ait veri yoktur.'
+    );
   });
 
   // KARAR TASLAĞI OLUŞTURMA
@@ -1056,7 +1312,7 @@ Dosya/başvuru kodu: ${val('caseRef')}
 Değerlendirme tarihi: ${val('examDate')}
 
 1. İncelenen belgeler
-${selectedFiles.length ? selectedFiles.map(f => '- ' + f.name).join('\n') : '[Belge listesi manuel olarak doğrulanmalıdır.]'}
+${selectedFiles.length ? selectedFiles.map(file => '- ' + file.name).join('\n') : '[Belge listesi manuel olarak doğrulanmalıdır.]'}
 ${captured.length ? '- Kamera ile alınan görüntü sayısı: ' + captured.length : ''}
 
 2. Tıbbi öykü ve objektif bulgular
@@ -1104,13 +1360,13 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
 
   // WORD UYUMLU DOSYA İNDİRME
   $('downloadWord').addEventListener('click', () => {
-    const escapeHtml = s =>
-      s.replace(/[&<>"]/g, c => ({
+    const escapeHtml = text =>
+      text.replace(/[&<>"]/g, character => ({
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;'
-      }[c]));
+      }[character]));
 
     const content =
       '<!doctype html><html><head><meta charset="utf-8">' +
@@ -1145,6 +1401,7 @@ Oluşturulan metin taslaktır. Nihai karar yetkili kurul tarafından, dosyanın 
   $('print').addEventListener('click', () => window.print());
 
   renderFiles();
+
 })();
 </script>
 
