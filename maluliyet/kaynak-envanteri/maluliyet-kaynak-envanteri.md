@@ -2,7 +2,7 @@
 
 **Envanter tarihi:** 24 Ekim 2026  
 **Kaynak klasörü:** `C:\Users\TAMER\OneDrive\Belgeler\maluliyet`  
-**Kapsam:** Klasördeki 6 PDF, toplam 465 sayfa. Metin dökümleri bu envanterle aynı `kaynak-envanteri` klasöründedir. Altı dosyadan beşi etkin kaynak, biri iptal edilmiş tarihsel kayıttır.  
+**Kapsam:** `maluliyet` klasöründe 5 etkin PDF, toplam 425 sayfa vardır. İptal edilen eski ek yalnızca önceki envanterden kalan tarihsel kayıt olarak belirtilir; PDF ve OCR dökümü artık GitHub’da bulunmuyor. Beş etkin PDF’nin metin dökümleri bu envanterle aynı `kaynak-envanteri` klasöründedir.  
 **Amaç:** Kural çıkarımı ve mevzuata dayalı değerlendirmeler için izlenebilir kaynak kayıtları oluşturmak. Bu envanter hukuki yürürlük/doğruluk onayı veya otomatik karar kuralı değildir.
 
 ## Kaynak kayıtları
@@ -13,14 +13,14 @@
 | PDF-002 | `maluliyet_islemleri_ek_1.pdf` | “Ek-1 Hastalık Listesi”; çalışma gücü kaybına neden olan hastalık grupları ve düzey koşulları | 40 | [Tam sayfa dökümü](maluliyet_islemleri_ek_1.txt) | PDF metin katmanı; her sayfada metin bulundu | `0525b9e37abd05878aca26565b34b9da47c3eb40fc9e71c9d29b9ef307da9f6d` |
 | PDF-003 | `saglik-raporlari-yonetmeligi-19052026pdf.pdf` | Sağlık Raporları Yönetmeliği; 19.05.2026 Resmî Gazete, Sayı 33258; Karar No. 11361; karar tarihi 18.05.2026 | 35 | [OCR sayfa dökümü](saglik-raporlari-yonetmeligi-19052026pdf.txt) | Görüntü tabanlı PDF; Türkçe OCR; ortalama sayfa güveni %94,9; en düşük sayfa güveni %94,0 | `05c15cc61ac3e1f234be459fe8616c2b4305d2374ecb8dceef19a9180a2e6e55` |
 | PDF-004 | `Sosyal Sigorta İşlemleri Yönetmeliği.pdf` | Sosyal Sigorta İşlemleri Yönetmeliği | 102 | [Tam sayfa dökümü](Sosyal%20Sigorta%20%C4%B0%C5%9Flemleri%20Y%C3%B6netmeli%C4%9Fi.txt) | PDF metin katmanı; her sayfada metin bulundu | `6af724db4c1259d38a089cd769a9c14fded2dd9add268a1165eb72bdaeee35a8` |
-| PDF-005 | `yonetmelik_eki.pdf` | **İPTAL — kural kaynağı olarak kullanılmayacak.** Kullanıcının teyidine göre esas alınacak okunabilir ek PDF-002’dir; bu dosya geçmiş kaydı olarak tutulur. | 40 | [Tarihsel OCR dökümü](yonetmelik_eki.txt) | Görüntü tabanlı PDF; Türkçe OCR; kural çıkarımının dışında | `73039dd4def6d2804ef647f2063a344a0a7b6086b08485f62ebe527c6d2adff1` |
+| PDF-005 | `yonetmelik_eki.pdf` (iptal; GitHub’dan kaldırıldı) | **İPTAL — kural kaynağı olarak kullanılmayacak.** Kullanıcının teyidine göre esas Hastalık Listesi eki PDF-002’dir. Bu tarihsel kaydın PDF’si ve OCR dökümü artık depoda yoktur. | 40 (önceki kopya) | Depoda yok | Önceki envanterde görüntü tabanlı OCR kaydı; etkin kural kaynağı değil | `73039dd4def6d2804ef647f2063a344a0a7b6086b08485f62ebe527c6d2adff1` |
 | PDF-006 | `yönetmelik.pdf` | Maluliyet ve Çalışma Gücü Kaybı Tespiti İşlemleri Yönetmeliği; 28.09.2021 Resmî Gazete, Sayı 31612 | 45 | [Tam sayfa dökümü](yönetmelik.txt) | PDF metin katmanı; her sayfada metin bulundu | `0ab93ed4fd6ef443bdf8baaafa12102d6bf0514086cc19ea28065aa7d0cf0bc3` |
 
 ## Okunabilirlik ve eksiksizlik kontrolü
 
-- Altı PDF’nin tamamı yerel kaynak klasöründen açıldı; PDF başlıkları, sayfa sayıları, dosya boyutları ve kaynak dosyaların SHA-256 özetleri kaydedildi.
+- Envanter ilk oluşturulurken altı PDF açılmış ve sayfa sayıları/hash değerleri kaydedilmişti. Kullanıcının iptal ettiği PDF-005 sonradan GitHub’dan kaldırıldı; mevcut depoda 5 etkin PDF (425 sayfa) ve bunlara ait 5 metin dökümü bulunuyor.
 - PDF-001, PDF-002, PDF-004 ve PDF-006’dan sayfa başına metin çıkarıldı. Bu dört belgede metin içermeyen sayfa saptanmadı.
-- PDF-003 ve PDF-005 görüntü tabanlı olduğundan 75 sayfanın tamamı 180 DPI görüntüye dönüştürülerek Türkçe OCR’dan geçirildi. Her sayfada OCR metni oluştu. Güven puanı OCR motorunun tahminidir; doğruluk yüzdesi veya insan denetimi anlamına gelmez.
+- PDF-003 görüntü tabanlıdır; 35 sayfanın tamamı 180 DPI Türkçe OCR’dan geçirilmiştir. Kullanıcı ilgili maddeleri, tabloları, eşikleri ve istisnaları sayfa görüntülerinden kontrol etmiştir. PDF-005’in önceki OCR kaydı iptal edilen kaynakla birlikte etkin kullanım dışındadır ve dökümü GitHub’da tutulmuyor.
 - Her döküm sayfa sınırlarıyla tutulmuştur. OCR dökümlerinde sayfa başlığında OCR güven puanı da bulunur. Bu metin dosyaları aranabilir çalışma kopyalarıdır; imzalı/doğrulanmış resmi nüsha yerine geçmez.
 - Dört metin katmanlı PDF’de kelimeler çıkarılmıştır; PDF’den metin alma işlemi başlık, altbilgi, sütun ve tablo görsel yerleşimini her zaman aslı gibi korumaz. OCR’da özellikle madde numarası, tablo hücresi, noktalama, Türkçe karakter, dipnot ve sütun sırası için kaynak sayfa görüntüsüyle karşılaştırma gerekir.
 
@@ -29,7 +29,7 @@
 - PDF-001 (5510 sayılı Kanun) ve PDF-006 (2021 Yönetmeliği) güncel konsolide metin olarak kullanıcı tarafından doğrulanmıştır; kural çıkarımında etkin kaynak kabul edilir.
 - PDF-003 (19.05.2026 Sağlık Raporları Yönetmeliği) içindeki ilgili madde numaraları, tablolar, eşikler ve istisnalar kullanıcı tarafından sayfa görüntülerinden kontrol edilmiştir. Metin dökümü aranabilir yardımcı kopyadır; ihtilaf halinde kaynak PDF görüntüsü esas alınır.
 - PDF-002 (`maluliyet_islemleri_ek_1.pdf`) okunabilir ve esas Hastalık Listesi eki olarak kullanıcı tarafından teyit edilmiştir; etkin kaynak kabul edilir.
-- PDF-005 (`yonetmelik_eki.pdf`) kullanıcı tarafından iptal edilmiştir. Envanterde izlenebilirlik için tutulur; kural çıkarımında kullanılmamalı ve PDF-002 ile birleştirilmemelidir.
+- PDF-005 (`yonetmelik_eki.pdf`) kullanıcı tarafından iptal edilip GitHub’dan kaldırılmıştır. Yalnızca tarihsel envanter kaydı ve daha önce hesaplanmış SHA-256 değeri tutulur; PDF/OCR metni depoda yoktur. Kural çıkarımında kullanılmamalı ve PDF-002 ile birleştirilmemelidir.
 - PDF-004 Sosyal Sigorta İşlemleri Yönetmeliği, ilgili olduğu kurallar için yardımcı kaynaktır; bu sohbette güncelliği ayrıca teyit edilmemiştir.
 - Bu doğrulama durumları kullanıcı beyanına dayanır; metin dökümleri dosya metinlerini bulmayı kolaylaştırır, resmî nüshanın yerine geçmez.
 - Her kural kaydında kaynak ID, madde/ek/sayfa, kapsam, koşullar, istisnalar, otomatik kontrol verisi ve doğrulama durumu saklanmalıdır.
